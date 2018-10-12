@@ -472,6 +472,9 @@ namespace Neo.Compiler.MSIL
                         || _ref.DeclaringType.FullName == "System.Int32"
                         || _ref.DeclaringType.FullName == "System.Numerics.BigInteger")
                     {
+                      logger.Log("Calling NUMEQUAL");
+                      logger.Log(_ref.DeclaringType.FullName);
+                      
                         _Convert1by1(VM.OpCode.NUMEQUAL, src, to);
                     }
                     else
@@ -690,7 +693,7 @@ namespace Neo.Compiler.MSIL
             bool havethis = md.HasThis;
             if (calltype == 2)
             {
-                //opcode call 
+                //opcode call
             }
             else
             {//翻转参数顺序
@@ -1190,7 +1193,7 @@ namespace Neo.Compiler.MSIL
             //_Convert1by1(VM.OpCode.CLONESTRUCTONLY, src, to);
 
             _ConvertPush(id, null, to);//index
-            _Convert1by1(VM.OpCode.SWAP, null, to);//把item 拿上來 
+            _Convert1by1(VM.OpCode.SWAP, null, to);//把item 拿上來
 
             _Convert1by1(VM.OpCode.SETITEM, null, to);//修改值 //item //index //array
             return 0;

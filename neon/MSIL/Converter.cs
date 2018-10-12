@@ -433,7 +433,7 @@ namespace Neo.Compiler.MSIL
         {
             int skipcount = 0;
             logger.Log("CODE:");
-            logger.Log(src.code);
+            logger.Log((string)src.code);
             switch (src.code)
             {
                 case CodeEx.Nop:

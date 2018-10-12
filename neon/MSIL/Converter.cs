@@ -592,6 +592,7 @@ namespace Neo.Compiler.MSIL
                 case CodeEx.Beq:
                 case CodeEx.Beq_S:
                     {
+                        logger.Log("NUMEQUAL Beq_S");
                         _Convert1by1(VM.OpCode.NUMEQUAL, src, to);
                         var code = _Convert1by1(VM.OpCode.JMPIF, null, to, new byte[] { 0, 0 });
                         code.needfix = true;
@@ -765,6 +766,7 @@ namespace Neo.Compiler.MSIL
                     _Convert1by1(VM.OpCode.GT, src, to);
                     break;
                 case CodeEx.Ceq:
+                    logger.Log("NUMEQUAL .Ceq");
                     _Convert1by1(VM.OpCode.NUMEQUAL, src, to);
                     break;
 

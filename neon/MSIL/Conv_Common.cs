@@ -187,7 +187,7 @@ namespace Neo.Compiler.MSIL
         private int _ConvertPushI4WithConv(ILMethod from, int i, OpCode src, NeoMethod to)
         {
             logger.Log("CALLING _ConvertPushI4WithConv");
-            logger.Log(i.toString());
+            logger.Log(i.ToString());
             var next = from.GetNextCodeAddr(src.addr);
             var code = from.body_Codes[next].code;
             BigInteger outv;

@@ -434,6 +434,8 @@ namespace Neo.Compiler.MSIL
             int skipcount = 0;
             switch (src.code)
             {
+                logger.Log("CODE:");
+                logger.Log(src.code);
                 case CodeEx.Nop:
                     _Convert1by1(VM.OpCode.NOP, src, to);
                     break;

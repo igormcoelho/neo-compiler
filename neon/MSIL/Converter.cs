@@ -892,37 +892,37 @@ namespace Neo.Compiler.MSIL
                             if (_src is byte[])
                             {
                                 var bytesrc = (byte[])_src;
-                                Console.Write("Creating byte[]!");
+                                logger.Log("Creating byte[]!");
                                 _ConvertPush(bytesrc, src, to);
                             }
                             else if (_src is byte)
                             {
                                 var bytesrc = (byte)_src;
-                                Console.Write("Creating byte!");
+                                logger.Log("Creating byte!");
                                 _ConvertPush(new byte[]{bytesrc}, src, to);
                             }
                             else if (_src is Byte)
                             {
                                 var bytesrc = (Byte)_src;
-                                Console.Write("Creating Byte!");
+                                logger.Log("Creating Byte!");
                                 _ConvertPush(new byte[]{bytesrc}, src, to);
                             }
                             else if (_src is int)
                             {
                                 var intsrc = (int)_src;
-                                Console.Write("Creating int!");
+                                logger.Log("Creating int!");
                                 _ConvertPush(intsrc, src, to);
                             }
                             else if (_src is long)
                             {
                                 var intsrc = (long)_src;
-                                Console.Write("Creating long!");
+                                logger.Log("Creating long!");
                                 _ConvertPush(intsrc, src, to);
                             }
                             else if (_src is Boolean)
                             {
                                 var bsrc = (Boolean)_src;
-                                Console.Write("Creating Boolean!");
+                                logger.Log("Creating Boolean!");
                                 _ConvertPush(bsrc ? 1 : 0, src, to);
                             }
                             else if (_src is string)
@@ -933,7 +933,7 @@ namespace Neo.Compiler.MSIL
                             else if (_src is BigInteger)
                             {
                                 byte[] bytes = ((BigInteger)_src).ToByteArray();
-                                Console.Write("Creating BigInteger!");
+                                logger.Log("Creating BigInteger!");
                                 _ConvertPush(bytes, src, to);
 
                             }

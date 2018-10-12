@@ -453,6 +453,7 @@ namespace Neo.Compiler.MSIL
 
                 case CodeEx.Ldc_I4:
                 case CodeEx.Ldc_I4_S:
+
                     skipcount = _ConvertPushI4WithConv(method, src.tokenI32, src, to);
                     break;
                 case CodeEx.Ldc_I4_0:

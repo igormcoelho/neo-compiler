@@ -432,10 +432,10 @@ namespace Neo.Compiler.MSIL
         private int ConvertCode(ILMethod method, OpCode src, NeoMethod to)
         {
             int skipcount = 0;
+            logger.Log("CODE:");
+            logger.Log(src.code);
             switch (src.code)
             {
-                logger.Log("CODE:");
-                logger.Log(src.code);
                 case CodeEx.Nop:
                     _Convert1by1(VM.OpCode.NOP, src, to);
                     break;

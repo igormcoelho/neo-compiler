@@ -333,7 +333,7 @@ namespace Neo.Compiler.MSIL
                 else
                 {
                     //在return之前加入清理参数代码
-                    if (src.code == CodeEx.Ret)//before return 
+                    if (src.code == CodeEx.Ret)//before return
                     {
                         _insertEndCode(from, to, src);
                     }
@@ -894,6 +894,11 @@ namespace Neo.Compiler.MSIL
                                 var bytesrc = (byte[])_src;
                                 _ConvertPush(bytesrc, src, to);
                             }
+                            else if (_src is byte)
+                            {
+                                var bytesrc = (byte)_src;
+                                _ConvertPush(new byte[]{bytesrc}, src, to);
+                            }
                             else if (_src is int)
                             {
                                 var intsrc = (int)_src;
@@ -903,7 +908,6 @@ namespace Neo.Compiler.MSIL
                             {
                                 var intsrc = (long)_src;
                                 _ConvertPush(intsrc, src, to);
-
                             }
                             else if (_src is Boolean)
                             {

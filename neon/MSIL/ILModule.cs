@@ -200,7 +200,7 @@ namespace Neo.Compiler.MSIL
 
     public class ILMethod
     {
-        public ILMethod(ILType type, Mono.Cecil.MethodDefinition method)
+        public ILMethod(ILType type, Mono.Cecil.MethodDefinition method, ILogger logger)
         {
             this.method = method;
             if (method != null)

@@ -45,12 +45,12 @@ namespace Neo.Compiler.MSIL
                     if (t.FullName.Contains(".My."))//vb 系统类不要
                         continue;
 
-                    mapType[t.FullName] = new ILType(this, t);
+                    mapType[t.FullName] = new ILType(this, t, logger);
                     if (t.HasNestedTypes)
                     {
                         foreach (var nt in t.NestedTypes)
                         {
-                            mapType[nt.FullName] = new ILType(this, nt);
+                            mapType[nt.FullName] = new ILType(this, nt, logger);
 
                         }
                     }
@@ -65,8 +65,10 @@ namespace Neo.Compiler.MSIL
         Mono.Cecil.TypeDefinition type;
         public Dictionary<string, ILField> fields = new Dictionary<string, ILField>();
         public Dictionary<string, ILMethod> methods = new Dictionary<string, ILMethod>();
-        public ILType(ILModule module, Mono.Cecil.TypeDefinition type)
+        public ILogger logger;
+        public ILType(ILModule module, Mono.Cecil.TypeDefinition type, ILogger _logger)
         {
+            this.logger = _logger;
             this.type = type;
             foreach (Mono.Cecil.FieldDefinition f in type.Fields)
             {

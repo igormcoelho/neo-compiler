@@ -254,6 +254,7 @@ namespace Neo.Compiler.MSIL
                             c.debugcode = sp.Document.Url;
                             c.debugline = sp.StartLine;
                         }
+                        logger.Log("OPERANDO!");
                         c.InitToken(code.Operand);
                         this.body_Codes.Add(c.addr, c);
                     }

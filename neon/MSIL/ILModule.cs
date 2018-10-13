@@ -76,13 +76,13 @@ namespace Neo.Compiler.MSIL
             {
                 if (m.IsStatic == false)
                 {
-                    var method = new ILMethod(this, null);
+                    var method = new ILMethod(this, null, logger);
                     method.fail = "只能导出static 函数";
                     methods[m.FullName] = method;
                 }
                 else
                 {
-                    var method = new ILMethod(this, m);
+                    var method = new ILMethod(this, m, logger);
                     if (methods.ContainsKey(m.FullName))
                     {
                         throw new Exception("already have a func named:" + type.FullName + "::" + m.Name);

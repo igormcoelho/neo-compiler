@@ -474,7 +474,7 @@ namespace Neo.Compiler.MSIL
                     {
                       logger.Log("Calling NUMEQUAL");
                       logger.Log(_ref.DeclaringType.FullName);
-                      
+
                         _Convert1by1(VM.OpCode.NUMEQUAL, src, to);
                     }
                     else
@@ -859,7 +859,7 @@ namespace Neo.Compiler.MSIL
             ILType type;
             if (inModule.mapType.TryGetValue(typename, out type) == false)
             {
-                type = new ILType(null, method.DeclaringType);
+                type = new ILType(null, method.DeclaringType, logger);
                 inModule.mapType[typename] = type;
             }
 

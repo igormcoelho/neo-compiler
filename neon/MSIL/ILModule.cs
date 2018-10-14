@@ -12,9 +12,10 @@ namespace Neo.Compiler.MSIL
         public Mono.Cecil.ModuleDefinition module = null;
         public List<string> moduleref = new List<string>();
         public Dictionary<string, ILType> mapType = new Dictionary<string, ILType>();
-        public ILModule()
+        public ILogger logger;
+        public ILModule(ILogger _logger)
         {
-
+          this.logger = _logger;
         }
         public void LoadModule(System.IO.Stream dllStream, System.IO.Stream pdbStream)
         {

@@ -786,7 +786,7 @@ namespace Neo.Compiler.MSIL
                 outbytes[2] = bt32out[1];
                 outbytes[3] = bt32out[2];
                 outbytes[4] = bt32out[3];
-                Array.Copy(bytes, 0, outbytes, 1, 4);
+                Array.Copy(bt32out, 0, outbytes, 1, 4);
                 //Array.Copy(bytes, 0, outbytes, 1, bytes.Length);
                 //bytes.Prepend 函数在 dotnet framework 4.6 编译不过
                 _Convert1by1(VM.OpCode.SYSCALL, null, to, outbytes);

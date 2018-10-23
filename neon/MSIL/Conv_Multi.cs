@@ -780,12 +780,16 @@ namespace Neo.Compiler.MSIL
                 //byte[] outbytes = new byte[bytes.Length + 1]; // IGOR
                 byte[] outbytes = new byte[4 + 1]; // IGOR
                 byte[] bt32out = ToSHA256(bytes);
+
+
                 //outbytes[0] = (byte)bytes.Length;
                 outbytes[0] = (byte)4;
                 outbytes[1] = bt32out[0];
                 outbytes[2] = bt32out[1];
                 outbytes[3] = bt32out[2];
                 outbytes[4] = bt32out[3];
+                uint ui = BitConverter.ToUInt32(outbytes, 1);
+                logger.Log($"Interop {callname} = {ui.ToString()}\n");
                 Array.Copy(bt32out, 0, outbytes, 1, 4);
                 //Array.Copy(bytes, 0, outbytes, 1, bytes.Length);
                 //bytes.Prepend 函数在 dotnet framework 4.6 编译不过

@@ -768,7 +768,7 @@ namespace Neo.Compiler.MSIL
                 byte[] bytes;
                 using (SHA256 sha = SHA256.Create())
                 {
-                    bytes = sha.ComputeHash(bytesName);
+                    bytes = sha.ComputeHash(bytesName).Take(4).ToArray();
                 }
                 byte[] outbytes = new byte[bytes.Length + 1];
                 outbytes[0] = (byte)bytes.Length;

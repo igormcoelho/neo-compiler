@@ -768,7 +768,7 @@ namespace Neo.Compiler.MSIL
                 byte[] bytes = {0, 0, 0, 0};
                 using (SHA256 sha = SHA256.Create())
                 {
-                    var bt32out = sha.ComputeHash(method);
+                    var bt32out = sha.ComputeHash(bytesName);
                     for(var i = 0; i<bytes.Length; i++)
                         bytes[i] = bt32out[i];
                 }

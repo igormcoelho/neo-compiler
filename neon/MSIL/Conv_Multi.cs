@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Security.Cryptography;
 
 namespace Neo.Compiler.MSIL
 {
@@ -10,6 +11,15 @@ namespace Neo.Compiler.MSIL
     /// </summary>
     public partial class ModuleConverter
     {
+        private byte[] ToSHA256(byte[] method)
+        {
+            using (SHA256 sha = SHA256.Create())
+            {
+                //return BitConverter.ToUInt32(sha.ComputeHash(method), 0);
+                return sha.ComputeHash(method);
+            }
+        }
+
         private void _ConvertStLoc(ILMethod method, OpCode src, NeoMethod to, int pos)
         {
 
@@ -767,9 +777,17 @@ namespace Neo.Compiler.MSIL
             {
                 var bytes = Encoding.UTF8.GetBytes(callname);
                 if (bytes.Length > 252) throw new Exception("string is to long");
-                byte[] outbytes = new byte[bytes.Length + 1];
-                outbytes[0] = (byte)bytes.Length;
-                Array.Copy(bytes, 0, outbytes, 1, bytes.Length);
+                //byte[] outbytes = new byte[bytes.Length + 1]; // IGOR
+                byte[] outbytes = new byte[4 + 1]; // IGOR
+                byte[] bt32out = ToSHA256(bytes);
+                //outbytes[0] = (byte)bytes.Length;
+                outbytes[0] = (byte)4;
+                outbytes[1] = bt32out[0];
+                outbytes[2] = bt32out[1];
+                outbytes[3] = bt32out[2];
+                outbytes[4] = bt32out[3];
+                Array.Copy(bytes, 0, outbytes, 1, 4);
+                //Array.Copy(bytes, 0, outbytes, 1, bytes.Length);
                 //bytes.Prepend 函数在 dotnet framework 4.6 编译不过
                 _Convert1by1(VM.OpCode.SYSCALL, null, to, outbytes);
                 return 0;

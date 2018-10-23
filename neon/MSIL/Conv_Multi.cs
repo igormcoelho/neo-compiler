@@ -764,15 +764,13 @@ namespace Neo.Compiler.MSIL
             else if (calltype == 3)
             {
                 var bytesName = Encoding.UTF8.GetBytes(callname);
-                if (bytesName.Length > 252) throw new Exception("string is to long");
-                byte[] bytes = {4, 0, 0, 0, 0};
+                if (bytesName.Length > 252) throw new Exception("string is too long");
+                byte[] bytes = {0, 0, 0, 0};
                 using (SHA256 sha = SHA256.Create())
                 {
                     var bt32out = sha.ComputeHash(method);
-                    bytes[1] = bt32out[0];
-                    bytes[2] = bt32out[1];
-                    bytes[3] = bt32out[2];
-                    bytes[4] = bt32out[3];
+                    for(var i = 0; i<bytes.Length; i++)
+                        bytes[i] = bt32out[i];
                 }
                 byte[] outbytes = new byte[bytes.Length + 1];
                 outbytes[0] = (byte)bytes.Length;

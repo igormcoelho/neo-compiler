@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Security.Cryptography;
 
 namespace Neo.Compiler.MSIL
 {
@@ -762,8 +763,17 @@ namespace Neo.Compiler.MSIL
             }
             else if (calltype == 3)
             {
-                var bytes = Encoding.UTF8.GetBytes(callname);
-                if (bytes.Length > 252) throw new Exception("string is to long");
+                var bytesName = Encoding.UTF8.GetBytes(callname);
+                if (bytesName.Length > 252) throw new Exception("string is to long");
+                byte[] bytes = {4, 0, 0, 0, 0};
+                using (SHA256 sha = SHA256.Create())
+                {
+                    var bt32out = sha.ComputeHash(method);
+                    bytes[1] = bt32out[0];
+                    bytes[2] = bt32out[1];
+                    bytes[3] = bt32out[2];
+                    bytes[4] = bt32out[3];
+                }
                 byte[] outbytes = new byte[bytes.Length + 1];
                 outbytes[0] = (byte)bytes.Length;
                 Array.Copy(bytes, 0, outbytes, 1, bytes.Length);

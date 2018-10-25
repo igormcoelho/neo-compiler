@@ -763,13 +763,9 @@ namespace Neo.Compiler.MSIL
             }
             else if (calltype == 3)
             {
-                var bytesName = Encoding.UTF8.GetBytes(callname);
-                if (bytesName.Length > 252) throw new Exception("string is too long");
-                byte[] bytes;
-                using (SHA256 sha = SHA256.Create())
-                {
-                    bytes = sha.ComputeHash(bytesName).Take(4).ToArray();
-                }
+                //now neovm use ineropMethod hash for syscall.
+                var bytes = BitConverter.GetBytes( callname.ToInteropMethodHash());
+
                 byte[] outbytes = new byte[bytes.Length + 1];
                 outbytes[0] = (byte)bytes.Length;
                 Array.Copy(bytes, 0, outbytes, 1, bytes.Length);

@@ -763,9 +763,17 @@ namespace Neo.Compiler.MSIL
             }
             else if (calltype == 3)
             {
-                //now neovm use ineropMethod hash for syscall.
-                var bytes = BitConverter.GetBytes( callname.ToInteropMethodHash());
-
+                byte[] bytes = null;
+                if (this.outModule.option.useSysCallInteropHash)
+                {
+                    //now neovm use ineropMethod hash for syscall.
+                    bytes = BitConverter.GetBytes(callname.ToInteropMethodHash());
+                }
+                else
+                {
+                    bytes = System.Text.Encoding.UTF8.GetBytes(callname);
+                    if (bytes.Length > 252) throw new Exception("string is to long");
+                }
                 byte[] outbytes = new byte[bytes.Length + 1];
                 outbytes[0] = (byte)bytes.Length;
                 Array.Copy(bytes, 0, outbytes, 1, bytes.Length);

@@ -937,7 +937,7 @@ namespace Neo.Compiler.MSIL
         private int _ConvertNewArr(ILMethod method, OpCode src, NeoMethod to)
         {
             var type = src.tokenType;
-            if (type != "System.Byte")
+            if ((type != "System.Byte") && (type != "System.SByte"))
             {
                 _Convert1by1(VM.OpCode.NEWARRAY, src, to);
                 int n = method.GetNextCodeAddr(src.addr);
@@ -958,13 +958,13 @@ namespace Neo.Compiler.MSIL
                         }
                         return 3;
                     }
-                    throw new Exception("not support this type's init array.");
+                    throw new Exception($"not support this type's init array. type: {type}");
 
                 }
                 return 0;
                 //this.logger.Log("_ConvertNewArr::not support type " + type + " for array.");
             }
-            else
+            else // (type == "System.Byte") || (type == "System.SByte")
             {
                 var code = to.body_Codes.Last().Value;
                 //we need a number
@@ -986,14 +986,28 @@ namespace Neo.Compiler.MSIL
                 int n2 = method.GetNextCodeAddr(n);
                 int n3 = method.GetNextCodeAddr(n2);
                 int n4 = method.GetNextCodeAddr(n3);
-                if (n >= 0 && n2 >= 0 && n3 >= 0 && method.body_Codes[n].code == CodeEx.Dup && method.body_Codes[n2].code == CodeEx.Ldtoken && method.body_Codes[n3].code == CodeEx.Call)
-                {//這是在初始化數組
 
-                    var data = method.body_Codes[n2].tokenUnknown as byte[];
-                    this._ConvertPush(data, src, to);
+                // 這是在初始化數組
+                // en: this is the initialization array
+                if (n >= 0 && n2 >= 0 && n3 >= 0 && method.body_Codes[n].code == CodeEx.Dup && method.body_Codes[n2].code == CodeEx.Ldtoken && method.body_Codes[n3].code == CodeEx.Call)
+                {
+                    if(type == "System.Byte")
+                    {
+                        var data = method.body_Codes[n2].tokenUnknown as byte[];
+                        List<byte> nba = new List<byte>();
+                        for (int i = 0; i < data.Length; i++)
+                            nba.AddRange(new BigInteger(data[i]).ToByteArray());
+                        byte[] data2 = nba.ToArray();
+                        this._ConvertPush(data2, src, to);
+                    }
+
+                    if(type == "System.SByte")
+                    {
+                        var data = method.body_Codes[n2].tokenUnknown as byte[];
+                        this._ConvertPush(data, src, to);
+                    }
 
                     return 3;
-
                 }
                 else
                 {

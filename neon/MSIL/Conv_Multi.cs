@@ -993,12 +993,14 @@ namespace Neo.Compiler.MSIL
                 {
                     if(type == "System.Byte")
                     {
+//                        var data = method.body_Codes[n2].tokenUnknown as byte[];
+//                        List<byte> nba = new List<byte>();
+//                        for (int i = 0; i < data.Length; i++)
+//                            nba.AddRange(new BigInteger(data[i]).ToByteArray());
+//                        byte[] data2 = nba.ToArray();
+//                        this._ConvertPush(data2, src, to);
                         var data = method.body_Codes[n2].tokenUnknown as byte[];
-                        List<byte> nba = new List<byte>();
-                        for (int i = 0; i < data.Length; i++)
-                            nba.AddRange(new BigInteger(data[i]).ToByteArray());
-                        byte[] data2 = nba.ToArray();
-                        this._ConvertPush(data2, src, to);
+                        this._ConvertPush(data, src, to);
                     }
 
                     if(type == "System.SByte")

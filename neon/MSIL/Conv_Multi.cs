@@ -364,6 +364,7 @@ namespace Neo.Compiler.MSIL
                     //var val = (byte[])attr.ConstructorArguments[0].Value;
                     //object -> Mono.Cecil.CustomAttributeArgument[]
                     //Mono.Cecil.CustomAttributeArgument values = (Mono.Cecil.CustomAttributeArgument)attr.ConstructorArguments[0].Value;
+                    logger.Log($"Value is {attr.ConstructorArguments[0].Value.ToString()}");
                     VM.OpCode[] values = (VM.OpCode[])attr.ConstructorArguments[0].Value;
                     //byte[] val = new byte[values.Length];
                     //for(var j=0; j<val.Length; j++)

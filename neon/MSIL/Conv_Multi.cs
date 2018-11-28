@@ -420,7 +420,7 @@ namespace Neo.Compiler.MSIL
                 calltype = 6;
                 to.lastparam = -1;
             }
-            else if (IsOpCall(defs, out callname))
+            else if (IsOpCall(defs, out callname)) // ACHEI!!
             {
                 if (System.Enum.TryParse<VM.OpCode>(callname, out callcode))
                 {
@@ -751,6 +751,9 @@ namespace Neo.Compiler.MSIL
                     }
                 }
             }
+
+            // ACHEI!! convert
+
             if (calltype == 1)
             {
                 if (this.outModule.option.useNep8)
@@ -774,6 +777,7 @@ namespace Neo.Compiler.MSIL
             else if (calltype == 2)
             {
                 _Convert1by1(callcode, src, to);
+                _Convert1by1(callcode, src, to); // dobra tudo!
                 return 0;
             }
             else if (calltype == 3)

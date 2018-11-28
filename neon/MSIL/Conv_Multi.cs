@@ -371,7 +371,7 @@ namespace Neo.Compiler.MSIL
                     logger.Log($"val[0] type: {val[0].Type.ToString()}");
                     logger.Log($"val[0] value: {val[0].Value.ToString()}");
 
-                    foreach (var t in va[0].type.Resolve().Fields)//type.Resolve().Fields)
+                    foreach (var t in val[0].Type.Resolve().Fields)//type.Resolve().Fields)
                     {
                         if (t.Constant != null)
                         {

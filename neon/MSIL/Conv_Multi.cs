@@ -317,6 +317,8 @@ namespace Neo.Compiler.MSIL
             {
                 if (attr.AttributeType.Name == "OpCodeAttribute")
                 {
+                    logger.Log("attr count:");
+                    logger.Log(attr.ConstructorArguments.Length);
                     var type = attr.ConstructorArguments[0].Type;
                     logger.Log("attr value:");
                     logger.Log(attr.ConstructorArguments[0].Value.ToString());

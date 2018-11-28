@@ -186,8 +186,10 @@ namespace Neo.Compiler.MSIL
                             continue;
                         if (IsNonCall(m.Value.method))
                             continue;
+                        logger.Log("will call IsOpCall");
                         if (IsOpCall(m.Value.method, out name))
                             continue;
+                        logger.Log($"after IsOpCall name: {name}");
                         if (IsSysCall(m.Value.method, out name))
                             continue;
 
@@ -198,6 +200,7 @@ namespace Neo.Compiler.MSIL
                           logger.Log(outcall.ToString());
 
 
+                        // REGULAR METHOD!!
                         this.ConvertMethod(m.Value, nm);
                     }
                     //catch (Exception err)

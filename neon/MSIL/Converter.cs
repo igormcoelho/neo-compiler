@@ -177,12 +177,14 @@ namespace Neo.Compiler.MSIL
                         logger.Log("Check options:");
                         if (m.Value.method == null)
                           logger.Log("null");
-                        else
+                        else{
+                          logger.Log(m.Value.ToString());
                         foreach (var attr in m.Value.method.CustomAttributes)
                         {
                             logger.Log("NAME->");
                             logger.Log(attr.AttributeType.Name);
                         }
+                      }
 
                         byte[] outcall; string name;
                         if (IsAppCall(m.Value.method, out outcall))

@@ -211,6 +211,7 @@ namespace Neo.Compiler.MSIL
                     //    logger.Log("error:" + err.Message);
                     //}
                 }
+                logger.Log("end METHODS");
             }
 
             logger.Log("GO GO GO!");

@@ -355,7 +355,7 @@ namespace Neo.Compiler.MSIL
                 if (attr.AttributeType.Name == "OpCodeArrayAttribute")
                 {
                     var type = attr.ConstructorArguments[0].Type;
-                    var val = (OpCode[])attr.ConstructorArguments[0].Value;
+                    var val = (byte[])attr.ConstructorArguments[0].Value;
                     names = new string[val.Length];
                     var count = 0;
 
@@ -364,7 +364,7 @@ namespace Neo.Compiler.MSIL
                     {
                         if (t.Constant != null)
                         {
-                            if ((byte)t.Constant == (byte)val[j])
+                            if ((byte)t.Constant == val[j])
                             {
 
                                 //dosth
@@ -433,6 +433,7 @@ namespace Neo.Compiler.MSIL
 
             int calltype = 0;
             string callname = "";
+            string[] callnames = null;
             int callpcount = 0;
             byte[] callhash = null;
             VM.OpCode callcode = VM.OpCode.NOP;

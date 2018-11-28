@@ -312,6 +312,8 @@ namespace Neo.Compiler.MSIL
                 return false;
             }
 
+            logger.Log("oi");
+
             foreach (var attr in defs.CustomAttributes)
             {
                 if (attr.AttributeType.Name == "OpCodeAttribute")
@@ -370,19 +372,17 @@ namespace Neo.Compiler.MSIL
                     var count = 0;
 
                     for(var j=0; j<values.Length; j++)
-                    foreach (var t in type.Resolve().Fields) // look in list of opcode names
+                    // type.Resolve() -> TypeDefinition
+                    // Fields -> Collection<FieldDefinition>
+                    foreach (Mono.Cecil.FieldDefinition t in type.Resolve().Fields) // look in list of opcode names
                     {
-                        if (t.Constant != null)
+                        if ((t.Constant != null) && ((byte)t.Constant == values[j]))
                         {
-                            if ((byte)t.Constant == values[j])
-                            {
-
-                                //dosth
-                                names[j] = t.Name;
-                                count++;
-                                if(count == val.Length)
-                                    return true;
-                            }
+                            //dosth
+                            names[j] = t.Name;
+                            count++;
+                            if(count == val.Length)
+                                return true;
                         }
                     }
 

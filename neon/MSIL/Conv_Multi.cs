@@ -365,13 +365,16 @@ namespace Neo.Compiler.MSIL
                     var type = attr.ConstructorArguments[0].Type;
                     logger.Log("attr value:");
                     logger.Log(attr.ConstructorArguments[0].Value.ToString());
-                    var val = (byte)attr.ConstructorArguments[0].Value;
+                    Mono.Cecil.CustomAttributeArgument[] val = (Mono.Cecil.CustomAttributeArgument[])attr.ConstructorArguments[0].Value;
 
-                    foreach (var t in type.Resolve().Fields)
+                    logger.Log($"val[0] type: {val[0].type.ToString()}");
+                    logger.Log($"val[0] value: {val[0].value.ToString()}");
+
+                    foreach (var t in va[0].type.Resolve().Fields)//type.Resolve().Fields)
                     {
                         if (t.Constant != null)
                         {
-                            if ((byte)t.Constant == val)
+                            if ((byte)t.Constant == (byte)val[1].value)
                             {
 
                                 //dosth

@@ -350,11 +350,12 @@ namespace Neo.Compiler.MSIL
                 return false;
             }
 
-            foreach (var attr in defs.CustomAttributes)
+            foreach (Mono.Cecil.CustomAttribute attr in defs.CustomAttributes)
             {
+                // attr.AttributeType is Mono.Cecil.TypeReference
                 if (attr.AttributeType.Name == "OpCodeArrayAttribute")
                 {
-                    var type = attr.ConstructorArguments[0].Type;
+                    Mono.Cecil.TypeReference type = attr.ConstructorArguments[0].Type;
                     //var val = (byte[])attr.ConstructorArguments[0].Value;
                     //object -> Mono.Cecil.CustomAttributeArgument[]
                     Mono.Cecil.CustomAttributeArgument[] values = (Mono.Cecil.CustomAttributeArgument[])attr.ConstructorArguments[0].Value;

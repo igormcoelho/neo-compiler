@@ -358,19 +358,19 @@ namespace Neo.Compiler.MSIL
                     //var val = (byte[])attr.ConstructorArguments[0].Value;
                     //object -> Mono.Cecil.CustomAttributeArgument[]
                     Mono.Cecil.CustomAttributeArgument[] values = (Mono.Cecil.CustomAttributeArgument[])attr.ConstructorArguments[0].Value;
-                    byte[] val = new byte[values.Length];
-                    for(var j=0; j<val.Length; j++)
-                        val[j] = (byte)values[j];
+                    //byte[] val = new byte[values.Length];
+                    //for(var j=0; j<val.Length; j++)
+                    //    val[j] = (byte)values[j];
 
-                    names = new string[val.Length];
+                    names = new string[values.Length];
                     var count = 0;
 
-                    for(var j=0; j<val.Length; j++)
+                    for(var j=0; j<values.Length; j++)
                     foreach (var t in type.Resolve().Fields) // look in list of opcode names
                     {
                         if (t.Constant != null)
                         {
-                            if ((byte)t.Constant == val[j])
+                            if ((byte)t.Constant == values[j])
                             {
 
                                 //dosth

@@ -529,20 +529,7 @@ namespace Neo.Compiler.MSIL
             }
             else if (IsOpCodesCall(defs, out callcodes)) // ACHEI!!
             {
-                callcodes = new VM.OpCode[callnames.Length];
                 calltype = 7;
-
-                for(var j=0; j<callcodes.Length; j++)
-                {
-                    if (System.Enum.TryParse<VM.OpCode>(callnames[j], out callcode))
-                    {
-                        callcodes[j] = callcode;
-                    }
-                    else
-                    {
-                        throw new Exception("Can not find OpCall:" + callnames[j]);
-                    }
-                }
             }
             else if (IsSysCall(defs, out callname))
             {
@@ -894,6 +881,7 @@ namespace Neo.Compiler.MSIL
             }
             else if (calltype == 7)
             {
+                logger.Log("will issue!!!");
                 for(var j=0; j<callcodes.Length; j++)
                     _Convert1by1(callcodes[j], src, to);
                 return 0;

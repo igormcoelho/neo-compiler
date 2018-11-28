@@ -302,6 +302,8 @@ namespace Neo.Compiler.MSIL
             }
             return false;
         }
+
+
         public bool IsOpCall(Mono.Cecil.MethodDefinition defs, out string name)
         {
             if (defs == null)
@@ -315,13 +317,13 @@ namespace Neo.Compiler.MSIL
                 if (attr.AttributeType.Name == "OpCodeAttribute")
                 {
                     var type = attr.ConstructorArguments[0].Type;
-                    var value = (byte)attr.ConstructorArguments[0].Value;
+                    var val = (byte)attr.ConstructorArguments[0].Value;
 
                     foreach (var t in type.Resolve().Fields)
                     {
                         if (t.Constant != null)
                         {
-                            if ((byte)t.Constant == value)
+                            if ((byte)t.Constant == val)
                             {
 
                                 //dosth
@@ -338,8 +340,9 @@ namespace Neo.Compiler.MSIL
             }
             name = "";
             return false;
-
         }
+
+
         public bool IsNotifyCall(Mono.Cecil.MethodDefinition defs, Mono.Cecil.MethodReference refs, NeoMethod to, out string name)
         {
 

@@ -68,11 +68,12 @@ namespace Neo.Compiler.MSIL
         public NeoModule Convert(ILModule _in, ConvOption option = null)
         {
             this.inModule = _in;
-            //logger.Log("beginConvert.");
+            logger.Log("beginConvert!");
             this.outModule = new NeoModule(this.logger);
             this.outModule.option = option == null ? ConvOption.Default : option;
             foreach (var t in _in.mapType)
             {
+                logger.Log("MAP_TYPE!");
                 if (t.Key.Contains("<"))
                     continue;//系统的，不要
                 if (t.Key.Contains("_API_")) continue;//api的，不要
@@ -110,6 +111,7 @@ namespace Neo.Compiler.MSIL
                 }
                 foreach (var e in t.Value.fields)
                 {
+                    logger.Log("VALUE_FIELD!");
                     if (e.Value.isEvent)
                     {
                         NeoEvent ae = new NeoEvent();
@@ -126,16 +128,17 @@ namespace Neo.Compiler.MSIL
             var keys = new List<string>(_in.mapType.Keys);
             foreach (var key in keys)
             {
-                var value = _in.mapType[key];
+                logger.Log("KEYS!!!");
+                var val = _in.mapType[key];
                 if (key.Contains("<"))
                     continue;//系统的，不要
                 if (key.Contains("_API_")) continue;//api的，不要
                 if (key.Contains(".My."))
                     continue;//vb system
 
-                foreach (var m in value.methods)
+                foreach (var m in val.methods)
                 {
-
+                    logger.Log("METHODS!");
                     if (m.Value.method == null) continue;
                     if (m.Key.Contains(".cctor"))
                     {
@@ -209,6 +212,8 @@ namespace Neo.Compiler.MSIL
                     //}
                 }
             }
+
+            logger.Log("GO GO GO!");
             //转换完了，做个link，全部拼到一起
             string mainmethod = "";
 

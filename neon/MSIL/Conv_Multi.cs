@@ -370,8 +370,8 @@ namespace Neo.Compiler.MSIL
                     // https://github.com/jbevain/cecil/blob/eea822cad4b6f320c9e1da642fcbc0c129b00a6e/Mono.Cecil/CustomAttribute.cs
                     logger.Log($"val[0] type: {val[0].Type.ToString()}");
                     logger.Log($"val[0] value: {val[0].Value.ToString()}");
-                    Neo.VM.OpCode opcodec = (Neo.VM.OpCode) val[0];
-                    logger.Log($"after casting opcodec: {opcodec.ToString()}");
+                    //Neo.VM.OpCode opcodec = (Neo.VM.OpCode) val[0];
+                    //logger.Log($"after casting opcodec: {opcodec.ToString()}");
 
                     foreach (var t in val[0].Type.Resolve().Fields)//type.Resolve().Fields)
                     {
@@ -393,6 +393,42 @@ namespace Neo.Compiler.MSIL
                 //if(attr.t)
             }
             name = "";
+            return false;
+        }
+
+        // https://github.com/jbevain/cecil/blob/eea822cad4b6f320c9e1da642fcbc0c129b00a6e/Mono.Cecil/CustomAttribute.cs
+        public bool IsOpCodesCall(Mono.Cecil.MethodDefinition defs, out byte[] opcodes)
+        {
+            opcodes = null;
+
+            if (defs == null)
+            {
+                return false;
+            }
+
+            foreach (var attr in defs.CustomAttributes)
+            {
+                // attr.AttributeType is Mono.Cecil.TypeReference
+                if (attr.AttributeType.Name == "OpCodesAttribute")
+                {
+                    logger.Log("attr count:");
+                    logger.Log(attr.ConstructorArguments.Count.ToString());
+                    if(attr.ConstructorArguments.Count != 1)
+                    {
+                        return false;
+                    }
+                    var type = attr.ConstructorArguments[0].Type;
+                    logger.Log("attr value:");
+                    logger.Log(attr.ConstructorArguments[0].Value.ToString());
+                    Mono.Cecil.CustomAttributeArgument[] val = (Mono.Cecil.CustomAttributeArgument[])attr.ConstructorArguments[0].Value;
+
+                    opcodes = new byte[val.Length];
+                    for(var j=0; j<val.Length; j++)
+                        opcodes[j] = (byte)val[j].Value;
+
+                    return true;
+                }
+            }
             return false;
         }
 

@@ -186,7 +186,7 @@ namespace Neo.Compiler.MSIL
                         }
                       }
 
-                        byte[] outcall; string name; string[] names;
+                        byte[] outcall; string name; byte[] opcodes;
                         if (IsAppCall(m.Value.method, out outcall))
                             continue;
                         if (IsNonCall(m.Value.method))
@@ -197,7 +197,7 @@ namespace Neo.Compiler.MSIL
                         if (IsOpCall2(m.Value.method, out name))
                             continue;
                         logger.Log($"after IsOpCall name: {name}");
-                        if (IsOpCallArray(m.Value.method, out names))
+                        if (IsOpCodesCall(m.Value.method, out opcodes))
                             continue;
                         if (IsSysCall(m.Value.method, out name))
                             continue;

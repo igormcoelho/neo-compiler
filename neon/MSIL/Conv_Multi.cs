@@ -358,10 +358,13 @@ namespace Neo.Compiler.MSIL
                     Mono.Cecil.TypeReference type = attr.ConstructorArguments[0].Type;
                     //var val = (byte[])attr.ConstructorArguments[0].Value;
                     //object -> Mono.Cecil.CustomAttributeArgument[]
-                    Mono.Cecil.CustomAttributeArgument[] values = (Mono.Cecil.CustomAttributeArgument[])attr.ConstructorArguments[0].Value;
+                    //Mono.Cecil.CustomAttributeArgument values = (Mono.Cecil.CustomAttributeArgument)attr.ConstructorArguments[0].Value;
+                    VM.OpCode[] values = (VM.OpCode[])attr.ConstructorArguments[0].Value;
                     //byte[] val = new byte[values.Length];
                     //for(var j=0; j<val.Length; j++)
                     //    val[j] = (byte)values[j];
+
+                    //VM.OpCode[] values2 =
 
                     names = new string[values.Length];
                     var count = 0;

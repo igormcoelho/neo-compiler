@@ -171,6 +171,9 @@ namespace Neo.Compiler.MSIL
                             nm.paramtypes.Add(new NeoParam(src.name, src.type));
                         }
 
+                        logger.Log("Check options:");
+                        logger.Log(m.Value.method);
+
                         byte[] outcall; string name;
                         if (IsAppCall(m.Value.method, out outcall))
                             continue;
@@ -180,6 +183,12 @@ namespace Neo.Compiler.MSIL
                             continue;
                         if (IsSysCall(m.Value.method, out name))
                             continue;
+
+                        logger.Log("After. name:");
+                        logger.Log(name);
+                        logger.Log("After. outcall:");
+                        logger.Log(outcall);
+
 
                         this.ConvertMethod(m.Value, nm);
                     }
@@ -429,6 +438,7 @@ namespace Neo.Compiler.MSIL
                 }
             }
         }
+
         private int ConvertCode(ILMethod method, OpCode src, NeoMethod to)
         {
             int skipcount = 0;

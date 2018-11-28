@@ -397,7 +397,7 @@ namespace Neo.Compiler.MSIL
         }
 
         // https://github.com/jbevain/cecil/blob/eea822cad4b6f320c9e1da642fcbc0c129b00a6e/Mono.Cecil/CustomAttribute.cs
-        public bool IsOpCodesCall(Mono.Cecil.MethodDefinition defs, out byte[] opcodes)
+        public bool IsOpCodesCall(Mono.Cecil.MethodDefinition defs, out VM.OpCode[] opcodes)
         {
             opcodes = null;
 
@@ -424,7 +424,10 @@ namespace Neo.Compiler.MSIL
 
                     opcodes = new byte[val.Length];
                     for(var j=0; j<val.Length; j++)
-                        opcodes[j] = (byte)val[j].Value;
+                    {
+                        logger.Log($"attr[{j}] value: {val[j].Value.ToString()}");
+                        opcodes[j] = ((VM.OpCode)(byte)val[j].Value);
+                    }
 
                     return true;
                 }
@@ -432,57 +435,7 @@ namespace Neo.Compiler.MSIL
             return false;
         }
 
-        public bool IsOpCallArray(Mono.Cecil.MethodDefinition defs, out string[] names)
-        {
-            if (defs == null)
-            {
-                names = null;
-                return false;
-            }
 
-            foreach (Mono.Cecil.CustomAttribute attr in defs.CustomAttributes)
-            {
-                // attr.AttributeType is Mono.Cecil.TypeReference
-                if (attr.AttributeType.Name == "OpCodeArrayAttribute")
-                {
-                    Mono.Cecil.TypeReference type = attr.ConstructorArguments[0].Type;
-                    //var val = (byte[])attr.ConstructorArguments[0].Value;
-                    //object -> Mono.Cecil.CustomAttributeArgument[]
-                    //Mono.Cecil.CustomAttributeArgument values = (Mono.Cecil.CustomAttributeArgument)attr.ConstructorArguments[0].Value;
-                    logger.Log($"Value is {attr.ConstructorArguments[0].Value.ToString()}");
-                    VM.OpCode[] values = (VM.OpCode[])attr.ConstructorArguments[0].Value;
-                    //byte[] val = new byte[values.Length];
-                    //for(var j=0; j<val.Length; j++)
-                    //    val[j] = (byte)values[j];
-
-                    //VM.OpCode[] values2 =
-
-                    names = new string[values.Length];
-                    var count = 0;
-
-                    for(var j=0; j<values.Length; j++)
-                    // type.Resolve() -> TypeDefinition
-                    // Fields -> Collection<FieldDefinition>
-                    foreach (Mono.Cecil.FieldDefinition t in type.Resolve().Fields) // look in list of opcode names
-                    {
-                        var val = (byte) values[j];
-                        if ((t.Constant != null) && ((byte)t.Constant == val))
-                        {
-                            //dosth
-                            names[j] = t.Name;
-                            count++;
-                            if(count == values.Length)
-                                return true;
-                        }
-                    }
-
-
-                }
-                //if(attr.t)
-            }
-            names = null;
-            return false;
-        }
 
         public bool IsNotifyCall(Mono.Cecil.MethodDefinition defs, Mono.Cecil.MethodReference refs, NeoMethod to, out string name)
         {
@@ -574,7 +527,7 @@ namespace Neo.Compiler.MSIL
                     throw new Exception("Can not find OpCall:" + callname);
                 }
             }
-            else if (IsOpCallArray(defs, out callnames)) // ACHEI!!
+            else if (IsOpCodesCall(defs, out callcodes)) // ACHEI!!
             {
                 callcodes = new VM.OpCode[callnames.Length];
                 calltype = 7;

@@ -186,7 +186,7 @@ namespace Neo.Compiler.MSIL
                         }
                       }
 
-                        byte[] outcall; string name; byte[] opcodes;
+                        byte[] outcall; string name; VM.OpCode[] opcodes;
                         if (IsAppCall(m.Value.method, out outcall))
                             continue;
                         if (IsNonCall(m.Value.method))

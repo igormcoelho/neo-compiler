@@ -319,7 +319,7 @@ namespace Neo.Compiler.MSIL
                 {
                     var type = attr.ConstructorArguments[0].Type;
                     logger.Log("attr value:");
-                    logger.Log(attr.ConstructorArguments[0].Value);
+                    logger.Log(attr.ConstructorArguments[0].Value.ToString());
                     var val = (byte)attr.ConstructorArguments[0].Value;
 
                     foreach (var t in type.Resolve().Fields)
@@ -330,7 +330,7 @@ namespace Neo.Compiler.MSIL
                             {
 
                                 //dosth
-                                name = (string)t.Name;
+                                name = t.Name;
                                 return true;
 
                             }

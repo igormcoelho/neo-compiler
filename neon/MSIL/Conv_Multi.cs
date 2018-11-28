@@ -370,6 +370,8 @@ namespace Neo.Compiler.MSIL
                     // https://github.com/jbevain/cecil/blob/eea822cad4b6f320c9e1da642fcbc0c129b00a6e/Mono.Cecil/CustomAttribute.cs
                     logger.Log($"val[0] type: {val[0].Type.ToString()}");
                     logger.Log($"val[0] value: {val[0].Value.ToString()}");
+                    Neo.VM.OpCode opcodec = (Neo.VM.OpCode) val[0];
+                    logger.Log($"after casting opcodec: {opcodec.ToString()}");
 
                     foreach (var t in val[0].Type.Resolve().Fields)//type.Resolve().Fields)
                     {

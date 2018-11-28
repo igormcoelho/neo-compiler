@@ -342,6 +342,32 @@ namespace Neo.Compiler.MSIL
             return false;
         }
 
+        public bool IsOpCallArray(Mono.Cecil.MethodDefinition defs, out OpCode[] opcodes)
+        {
+            if (defs == null)
+            {
+                opcodes = null;
+                return false;
+            }
+
+            foreach (var attr in defs.CustomAttributes)
+            {
+                if (attr.AttributeType.Name == "OpCodeArrayAttribute")
+                {
+                    var type = attr.ConstructorArguments[0].Type;
+                    var val = (VM.OpCode[])attr.ConstructorArguments[0].Value;
+
+                    //dosth
+                    opcodes = val;
+                    return true;
+
+
+                }
+                //if(attr.t)
+            }
+            opcodes = null;
+            return false;
+        }
 
         public bool IsNotifyCall(Mono.Cecil.MethodDefinition defs, Mono.Cecil.MethodReference refs, NeoMethod to, out string name)
         {
@@ -395,6 +421,7 @@ namespace Neo.Compiler.MSIL
             int callpcount = 0;
             byte[] callhash = null;
             VM.OpCode callcode = VM.OpCode.NOP;
+            VM.OpCode[] callcodes = null;
 
             Mono.Cecil.MethodDefinition defs = null;
             try
@@ -430,6 +457,25 @@ namespace Neo.Compiler.MSIL
                 {
                     throw new Exception("Can not find OpCall:" + callname);
                 }
+            }
+            else if (IsOpCallArray(defs, out opcodes)) // ACHEI!!
+            {
+                callcodes = opcodes;//new VM.OpCode[names.Length/2];
+                calltype = 7;
+
+                /* TODO
+                for(var j=0; j<callcodes.Length; j++)
+                {
+                    if (System.Enum.TryParse<VM.OpCode>(callname, out callcode))
+                    {
+                        calltype = 7;
+                    }
+                    else
+                    {
+                        throw new Exception("Can not find OpCall:" + callname);
+                    }
+                }
+                */
             }
             else if (IsSysCall(defs, out callname))
             {
@@ -777,7 +823,12 @@ namespace Neo.Compiler.MSIL
             else if (calltype == 2)
             {
                 _Convert1by1(callcode, src, to);
-                _Convert1by1(callcode, src, to); // dobra tudo!
+                return 0;
+            }
+            else if (calltype == 7)
+            {
+                for(var j=0; j<callcodes.Length; j++)
+                    _Convert1by1(callcodes[j], src, to);
                 return 0;
             }
             else if (calltype == 3)

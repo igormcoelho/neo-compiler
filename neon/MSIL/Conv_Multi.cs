@@ -355,7 +355,13 @@ namespace Neo.Compiler.MSIL
                 if (attr.AttributeType.Name == "OpCodeArrayAttribute")
                 {
                     var type = attr.ConstructorArguments[0].Type;
-                    var val = (byte[])attr.ConstructorArguments[0].Value;
+                    //var val = (byte[])attr.ConstructorArguments[0].Value;
+                    //Mono.Cecil.CustomAttributeArgument[]
+                    Mono.Cecil.CustomAttributeArgument[] values = attr.ConstructorArguments[0].Value;
+                    byte[] val = new byte[values.Length];
+                    for(var j=0; j<val.Length; j++)
+                        val[j] = (byte)values[j];
+
                     names = new string[val.Length];
                     var count = 0;
 

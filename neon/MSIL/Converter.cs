@@ -194,6 +194,8 @@ namespace Neo.Compiler.MSIL
                         logger.Log("will call IsOpCall");
                         if (IsOpCall(m.Value.method, out name))
                             continue;
+                        if (IsOpCall2(m.Value.method, out name))
+                            continue;
                         logger.Log($"after IsOpCall name: {name}");
                         if (IsOpCallArray(m.Value.method, out names))
                             continue;

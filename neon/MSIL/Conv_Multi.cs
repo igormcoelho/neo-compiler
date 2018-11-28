@@ -347,6 +347,49 @@ namespace Neo.Compiler.MSIL
             return false;
         }
 
+        public bool IsOpCall2(Mono.Cecil.MethodDefinition defs, out string name)
+        {
+            if (defs == null)
+            {
+                name = "";
+                return false;
+            }
+
+
+            foreach (var attr in defs.CustomAttributes)
+            {
+                if (attr.AttributeType.Name == "OpCode2Attribute")
+                {
+                    logger.Log("attr count:");
+                    logger.Log(attr.ConstructorArguments.Count.ToString());
+                    var type = attr.ConstructorArguments[0].Type;
+                    logger.Log("attr value:");
+                    logger.Log(attr.ConstructorArguments[0].Value.ToString());
+                    var val = (byte)attr.ConstructorArguments[0].Value;
+
+                    foreach (var t in type.Resolve().Fields)
+                    {
+                        if (t.Constant != null)
+                        {
+                            if ((byte)t.Constant == val)
+                            {
+
+                                //dosth
+                                name = t.Name;
+                                return true;
+
+                            }
+                        }
+                    }
+
+
+                }
+                //if(attr.t)
+            }
+            name = "";
+            return false;
+        }
+
         public bool IsOpCallArray(Mono.Cecil.MethodDefinition defs, out string[] names)
         {
             if (defs == null)

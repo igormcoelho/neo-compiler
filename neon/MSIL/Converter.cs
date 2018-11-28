@@ -172,7 +172,9 @@ namespace Neo.Compiler.MSIL
                         }
 
                         logger.Log("Check options:");
-                        if (m.Value.method != null)
+                        if (m.Value.method == null)
+                          logger.Log("null");
+                        else
                         foreach (var attr in m.Value.method.CustomAttributes)
                         {
                             logger.Log(attr.AttributeType.Name);
@@ -191,7 +193,8 @@ namespace Neo.Compiler.MSIL
                         logger.Log("After. name:");
                         logger.Log(name);
                         logger.Log("After. outcall:");
-                        logger.Log(outcall.ToString());
+                        if(outcall != null)
+                          logger.Log(outcall.ToString());
 
 
                         this.ConvertMethod(m.Value, nm);

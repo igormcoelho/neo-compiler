@@ -476,7 +476,7 @@ namespace Neo.Compiler.MSIL
             }
             else if (IsOpCallArray(defs, out callnames)) // ACHEI!!
             {
-                callcodes = new VM.Opcode[callnames.Length];
+                callcodes = new VM.OpCode[callnames.Length];
                 calltype = 7;
 
                 for(var j=0; j<callcodes.Length; j++)

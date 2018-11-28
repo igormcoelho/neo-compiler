@@ -367,14 +367,15 @@ namespace Neo.Compiler.MSIL
                     logger.Log(attr.ConstructorArguments[0].Value.ToString());
                     Mono.Cecil.CustomAttributeArgument[] val = (Mono.Cecil.CustomAttributeArgument[])attr.ConstructorArguments[0].Value;
 
-                    logger.Log($"val[0] type: {val[0].type.ToString()}");
-                    logger.Log($"val[0] value: {val[0].value.ToString()}");
+                    // https://github.com/jbevain/cecil/blob/eea822cad4b6f320c9e1da642fcbc0c129b00a6e/Mono.Cecil/CustomAttribute.cs
+                    logger.Log($"val[0] type: {val[0].Type.ToString()}");
+                    logger.Log($"val[0] value: {val[0].Value.ToString()}");
 
                     foreach (var t in va[0].type.Resolve().Fields)//type.Resolve().Fields)
                     {
                         if (t.Constant != null)
                         {
-                            if ((byte)t.Constant == (byte)val[1].value)
+                            if ((byte)t.Constant == (byte)val[1].Value)
                             {
 
                                 //dosth

@@ -422,7 +422,7 @@ namespace Neo.Compiler.MSIL
                     logger.Log(attr.ConstructorArguments[0].Value.ToString());
                     Mono.Cecil.CustomAttributeArgument[] val = (Mono.Cecil.CustomAttributeArgument[])attr.ConstructorArguments[0].Value;
 
-                    opcodes = new byte[val.Length];
+                    opcodes = new VM.OpCode[val.Length];
                     for(var j=0; j<val.Length; j++)
                     {
                         logger.Log($"attr[{j}] value: {val[j].Value.ToString()}");

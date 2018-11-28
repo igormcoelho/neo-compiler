@@ -330,7 +330,7 @@ namespace Neo.Compiler.MSIL
                             {
 
                                 //dosth
-                                name = t.Name;
+                                name = (string)t.Name;
                                 return true;
 
                             }

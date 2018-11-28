@@ -138,7 +138,7 @@ namespace Neo.Compiler.MSIL
 
                 foreach (var m in val.methods)
                 {
-                    logger.Log("METHODS!");
+                    logger.Log("\nNew method!\n");
                     if (m.Value.method == null) continue;
                     if (m.Key.Contains(".cctor"))
                     {

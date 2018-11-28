@@ -172,7 +172,10 @@ namespace Neo.Compiler.MSIL
                         }
 
                         logger.Log("Check options:");
-                        logger.Log(m.Value.method);
+                        foreach (var attr in m.Value.method.CustomAttributes)
+                        {
+                            logger.Log(attr.AttributeType.Name);
+                        }
 
                         byte[] outcall; string name;
                         if (IsAppCall(m.Value.method, out outcall))
@@ -187,7 +190,7 @@ namespace Neo.Compiler.MSIL
                         logger.Log("After. name:");
                         logger.Log(name);
                         logger.Log("After. outcall:");
-                        logger.Log(outcall);
+                        logger.Log(outcall.ToString());
 
 
                         this.ConvertMethod(m.Value, nm);

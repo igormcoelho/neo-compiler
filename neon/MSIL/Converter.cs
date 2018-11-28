@@ -177,6 +177,7 @@ namespace Neo.Compiler.MSIL
                         else
                         foreach (var attr in m.Value.method.CustomAttributes)
                         {
+                            logger.Log("NAME->");
                             logger.Log(attr.AttributeType.Name);
                         }
 

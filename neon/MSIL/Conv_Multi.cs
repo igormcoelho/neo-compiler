@@ -331,6 +331,42 @@ namespace Neo.Compiler.MSIL
             return false;
 
         }
+
+        public bool IsOpCodesCall(Mono.Cecil.MethodDefinition defs, out VM.OpCode[] opcodes)
+        {
+            opcodes = null;
+
+            if (defs == null)
+            {
+                return false;
+            }
+
+            foreach (var attr in defs.CustomAttributes)
+            {
+                // attr.AttributeType is Mono.Cecil.TypeReference
+                if (attr.AttributeType.Name == "OpCodesAttribute")
+                {
+                    if(attr.ConstructorArguments.Count != 1)
+                    {
+                        return false;
+                    }
+
+                    var type = attr.ConstructorArguments[0].Type;
+
+                    Mono.Cecil.CustomAttributeArgument[] val = (Mono.Cecil.CustomAttributeArgument[])attr.ConstructorArguments[0].Value;
+
+                    opcodes = new VM.OpCode[val.Length];
+                    for(var j=0; j<val.Length; j++)
+                    {
+                        opcodes[j] = ((VM.OpCode)(byte)val[j].Value);
+                    }
+
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public bool IsNotifyCall(Mono.Cecil.MethodDefinition defs, Mono.Cecil.MethodReference refs, NeoMethod to, out string name)
         {
 
@@ -383,6 +419,7 @@ namespace Neo.Compiler.MSIL
             int callpcount = 0;
             byte[] callhash = null;
             VM.OpCode callcode = VM.OpCode.NOP;
+            VM.OpCode[] callcodes = null;
 
             Mono.Cecil.MethodDefinition defs = null;
             try
@@ -418,6 +455,10 @@ namespace Neo.Compiler.MSIL
                 {
                     throw new Exception("Can not find OpCall:" + callname);
                 }
+            }
+            else if (IsOpCodesCall(defs, out callcodes))
+            {
+                calltype = 7;
             }
             else if (IsSysCall(defs, out callname))
             {
@@ -759,6 +800,12 @@ namespace Neo.Compiler.MSIL
             else if (calltype == 2)
             {
                 _Convert1by1(callcode, src, to);
+                return 0;
+            }
+            else if (calltype == 7)
+            {
+                for(var j=0; j<callcodes.Length; j++)
+                    _Convert1by1(callcodes[j], src, to);
                 return 0;
             }
             else if (calltype == 3)

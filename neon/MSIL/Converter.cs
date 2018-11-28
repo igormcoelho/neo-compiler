@@ -172,6 +172,7 @@ namespace Neo.Compiler.MSIL
                         }
 
                         logger.Log("Check options:");
+                        if (m.Value.method != null)
                         foreach (var attr in m.Value.method.CustomAttributes)
                         {
                             logger.Log(attr.AttributeType.Name);

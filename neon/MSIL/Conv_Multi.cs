@@ -342,11 +342,11 @@ namespace Neo.Compiler.MSIL
             return false;
         }
 
-        public bool IsOpCallArray(Mono.Cecil.MethodDefinition defs, out OpCode[] opcodes)
+        public bool IsOpCallArray(Mono.Cecil.MethodDefinition defs, out string[] names)
         {
             if (defs == null)
             {
-                opcodes = null;
+                names = null;
                 return false;
             }
 
@@ -355,17 +355,32 @@ namespace Neo.Compiler.MSIL
                 if (attr.AttributeType.Name == "OpCodeArrayAttribute")
                 {
                     var type = attr.ConstructorArguments[0].Type;
-                    var val = (VM.OpCode[])attr.ConstructorArguments[0].Value;
+                    var val = (OpCode[])attr.ConstructorArguments[0].Value;
+                    names = new string[val.Length];
+                    var count = 0;
 
-                    //dosth
-                    opcodes = val;
-                    return true;
+                    for(var j=0; j<val.Length; j++)
+                    foreach (var t in type.Resolve().Fields) // look in list of opcode names
+                    {
+                        if (t.Constant != null)
+                        {
+                            if ((byte)t.Constant == (byte)val[j])
+                            {
+
+                                //dosth
+                                names[j] = t.Name;
+                                count++;
+                                if(count == val.Length)
+                                    return true;
+                            }
+                        }
+                    }
 
 
                 }
                 //if(attr.t)
             }
-            opcodes = null;
+            names = null;
             return false;
         }
 
@@ -458,24 +473,22 @@ namespace Neo.Compiler.MSIL
                     throw new Exception("Can not find OpCall:" + callname);
                 }
             }
-            else if (IsOpCallArray(defs, out opcodes)) // ACHEI!!
+            else if (IsOpCallArray(defs, out callnames)) // ACHEI!!
             {
-                callcodes = opcodes;//new VM.OpCode[names.Length/2];
+                callcodes = new VM.Opcode[callnames.Length];
                 calltype = 7;
 
-                /* TODO
                 for(var j=0; j<callcodes.Length; j++)
                 {
-                    if (System.Enum.TryParse<VM.OpCode>(callname, out callcode))
+                    if (System.Enum.TryParse<VM.OpCode>(callnames[j], out callcode))
                     {
-                        calltype = 7;
+                        callcodes[j] = callcode;
                     }
                     else
                     {
-                        throw new Exception("Can not find OpCall:" + callname);
+                        throw new Exception("Can not find OpCall:" + callnames[j]);
                     }
                 }
-                */
             }
             else if (IsSysCall(defs, out callname))
             {

@@ -176,9 +176,7 @@ namespace Neo.Compiler.MSIL
                             continue;
                         if (IsNonCall(m.Value.method))
                             continue;
-                        if (IsOpCall(m.Value.method, out name))
-                            continue;
-                        if (IsOpCodesCall(m.Value.method, out opcodes))
+                        if (IsOpCall(m.Value.method, out opcodes))
                             continue;
                         if (IsSysCall(m.Value.method, out name))
                             continue;

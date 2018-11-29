@@ -293,11 +293,11 @@ namespace Neo.Compiler.MSIL
             }
             return false;
         }
-        public bool IsOpCall(Mono.Cecil.MethodDefinition defs, out string name)
+        public bool IsOpCall(Mono.Cecil.MethodDefinition defs, out VM.OpCode[] opcodes)
         {
+            opcodes = null;
             if (defs == null)
             {
-                name = "";
                 return false;
             }
 
@@ -305,64 +305,20 @@ namespace Neo.Compiler.MSIL
             {
                 if (attr.AttributeType.Name == "OpCodeAttribute")
                 {
-                    var type = attr.ConstructorArguments[0].Type;
-                    var value = (byte)attr.ConstructorArguments[0].Value;
-
-                    foreach (var t in type.Resolve().Fields)
-                    {
-                        if (t.Constant != null)
-                        {
-                            if ((byte)t.Constant == value)
-                            {
-
-                                //dosth
-                                name = t.Name;
-                                return true;
-
-                            }
-                        }
-                    }
-
-
-                }
-                //if(attr.t)
-            }
-            name = "";
-            return false;
-
-        }
-
-        public bool IsOpCodesCall(Mono.Cecil.MethodDefinition defs, out VM.OpCode[] opcodes)
-        {
-            opcodes = null;
-
-            if (defs == null)
-            {
-                return false;
-            }
-
-            foreach (var attr in defs.CustomAttributes)
-            {
-                // attr.AttributeType is Mono.Cecil.TypeReference
-                if (attr.AttributeType.Name == "OpCodesAttribute")
-                {
-                    if(attr.ConstructorArguments.Count != 1)
-                    {
-                        return false;
-                    }
 
                     var type = attr.ConstructorArguments[0].Type;
 
                     Mono.Cecil.CustomAttributeArgument[] val = (Mono.Cecil.CustomAttributeArgument[])attr.ConstructorArguments[0].Value;
 
                     opcodes = new VM.OpCode[val.Length];
-                    for(var j=0; j<val.Length; j++)
+                    for (var j = 0; j < val.Length; j++)
                     {
                         opcodes[j] = ((VM.OpCode)(byte)val[j].Value);
                     }
 
                     return true;
                 }
+                //if(attr.t)
             }
             return false;
         }
@@ -445,21 +401,23 @@ namespace Neo.Compiler.MSIL
                 calltype = 6;
                 to.lastparam = -1;
             }
-            else if (IsOpCall(defs, out callname))
+            else if (IsOpCall(defs, out callcodes))
             {
-                if (System.Enum.TryParse<VM.OpCode>(callname, out callcode))
-                {
-                    calltype = 2;
-                }
-                else
-                {
-                    throw new Exception("Can not find OpCall:" + callname);
-                }
+                calltype = 2;
+
+                //if (System.Enum.TryParse<VM.OpCode>(callname, out callcode))
+                //{
+                //    calltype = 2;
+                //}
+                //else
+                //{
+                //    throw new Exception("Can not find OpCall:" + callname);
+                //}
             }
-            else if (IsOpCodesCall(defs, out callcodes))
-            {
-                calltype = 7;
-            }
+            //else if (IsOpCodesCall(defs, out callcodes))
+            //{
+            //    calltype = 7;
+            //}
             else if (IsSysCall(defs, out callname))
             {
                 calltype = 3;
@@ -799,14 +757,9 @@ namespace Neo.Compiler.MSIL
             }
             else if (calltype == 2)
             {
-                _Convert1by1(callcode, src, to);
-                return 0;
-            }
-            else if (calltype == 7)
-            {
-                for(var j=0; j<callcodes.Length; j++)
+                //contains (0 opcode= nonemit, 1 opcode= old opcode  , >=2 opcodes = new multi opcode
+                for (var j = 0; j < callcodes.Length; j++)
                     _Convert1by1(callcodes[j], src, to);
-                return 0;
             }
             else if (calltype == 3)
             {
@@ -1217,10 +1170,16 @@ namespace Neo.Compiler.MSIL
                     {
                         if (attr.AttributeType.Name == "OpCodeAttribute")
                         {
+                            //object[] op = method.method.Annotations[0] as object[];
+                            var values = attr.ConstructorArguments[0].Value as Mono.Cecil.CustomAttributeArgument[];
+                            for(var j=0;j<values.Length;j++)
+                            {
+                                var value = (byte)values[j].Value;
+                                VM.OpCode v = (VM.OpCode)value;
+                                _Insert1(v, null, to);
+                            }
                             //var _type = attr.ConstructorArguments[0].Type;
-                            var value = (byte)attr.ConstructorArguments[0].Value;
-                            VM.OpCode v = (VM.OpCode)value;
-                            _Insert1(v, null, to);
+
                             return 0;
                         }
 

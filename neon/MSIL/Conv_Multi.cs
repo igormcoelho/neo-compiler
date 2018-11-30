@@ -15,9 +15,11 @@ namespace Neo.Compiler.MSIL
         {
 
             //get array
-            _Convert1by1(VM.OpCode.FROMALTSTACK, src, to);
-            _Convert1by1(VM.OpCode.DUP, null, to);
-            _Convert1by1(VM.OpCode.TOALTSTACK, null, to);
+            //_Convert1by1(VM.OpCode.FROMALTSTACK, src, to);
+            //_Convert1by1(VM.OpCode.DUP, null, to);
+            //_Convert1by1(VM.OpCode.TOALTSTACK, null, to);
+            _Convert1by1(VM.OpCode.DUPFROMALTSTACK, src, to);
+
             //get i
             _ConvertPush(pos + method.paramtypes.Count, null, to);//翻转取参数顺序
 
@@ -61,9 +63,10 @@ namespace Neo.Compiler.MSIL
         private void _ConvertLdLoc(ILMethod method, OpCode src, NeoMethod to, int pos)
         {
             //get array
-            _Convert1by1(VM.OpCode.FROMALTSTACK, src, to);
-            _Convert1by1(VM.OpCode.DUP, null, to);
-            _Convert1by1(VM.OpCode.TOALTSTACK, null, to);
+            //_Convert1by1(VM.OpCode.FROMALTSTACK, src, to);
+            //_Convert1by1(VM.OpCode.DUP, null, to);
+            //_Convert1by1(VM.OpCode.TOALTSTACK, null, to);
+            _Convert1by1(VM.OpCode.DUPFROMALTSTACK, src, to);
             //get i
             _ConvertPush(pos + method.paramtypes.Count, null, to);//翻转取参数顺序
             _Convert1by1(VM.OpCode.PICKITEM, null, to);
@@ -138,9 +141,10 @@ namespace Neo.Compiler.MSIL
             }
             //}
             //get array
-            _Convert1by1(VM.OpCode.FROMALTSTACK, src, to);
-            _Convert1by1(VM.OpCode.DUP, null, to);
-            _Convert1by1(VM.OpCode.TOALTSTACK, null, to);
+            //_Convert1by1(VM.OpCode.FROMALTSTACK, src, to);
+            //_Convert1by1(VM.OpCode.DUP, null, to);
+            //_Convert1by1(VM.OpCode.TOALTSTACK, null, to);
+            _Convert1by1(VM.OpCode.DUPFROMALTSTACK, src, to);
             //get i
             _ConvertPush(pos, null, to);//翻转取参数顺序
             _Convert1by1(VM.OpCode.PICKITEM, null, to);
@@ -1102,9 +1106,10 @@ namespace Neo.Compiler.MSIL
             //now stack  a index, a value
 
             //getarray
-            _Insert1(VM.OpCode.FROMALTSTACK, null, to);
-            _Insert1(VM.OpCode.DUP, null, to);
-            _Insert1(VM.OpCode.TOALTSTACK, null, to);
+            //_Convert1by1(VM.OpCode.FROMALTSTACK, null, to);
+            //_Convert1by1(VM.OpCode.DUP, null, to);
+            //_Convert1by1(VM.OpCode.TOALTSTACK, null, to);
+            _Convert1by1(VM.OpCode.DUPFROMALTSTACK, null, to);
 
             _InsertPush(2, "", to);//move item
             _Insert1(VM.OpCode.ROLL, null, to);

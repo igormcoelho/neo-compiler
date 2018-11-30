@@ -665,6 +665,14 @@ namespace Neo.Compiler.MSIL
                     _Convert1by1(VM.OpCode.CAT, null, to);
                     return 0;
                 }
+                else if (src.tokenMethod.Contains("ByteArray::get_Item(System.Int32"))
+                {
+                    _Convert1by1(VM.OpCode.CAT, null, to);
+                    _Convert1by1(VM.OpCode.CAT, null, to);
+                    _Convert1by1(VM.OpCode.CAT, null, to);
+                    _Convert1by1(VM.OpCode.CAT, null, to);
+                    return 0;
+                }
                 else if (src.tokenMethod == "System.UInt32 <PrivateImplementationDetails>::ComputeStringHash(System.String)")
                 {
                     throw new Exception("not supported on neovm now.");

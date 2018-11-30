@@ -455,6 +455,10 @@ namespace Neo.Compiler.MSIL
                     {
                         return 0;
                     }
+                    else if (src.tokenMethod == "Neo.SmartContract.Framework.ByteArray Neo.SmartContract.Framework.ByteArray::op_Implicit(System.Byte[])")
+                    {
+                        return 0;
+                    }
 
                     return 0;
                 }
@@ -659,6 +663,7 @@ namespace Neo.Compiler.MSIL
                 }
                 else if (src.tokenMethod.Contains("ByteArray::set_Item(System.Int32,System"))
                 {
+                    _Convert1by1(VM.OpCode.DROP, null, to);
                     _Convert1by1(VM.OpCode.PUSH2, null, to);
                     _Convert1by1(VM.OpCode.PICK, null, to);
                     _Convert1by1(VM.OpCode.PUSH2, null, to);

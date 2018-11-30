@@ -677,6 +677,40 @@ namespace Neo.Compiler.MSIL
                   logger.Log($"log Y prev2 line {to.body_Codes[addr-2].ToString()} is interval {((to.body_Codes[addr-2].code >= VM.OpCode.PUSH0) && (to.body_Codes[addr-2].code <= VM.OpCode.PUSH16)).ToString()}");
                   logger.Log($"log Y prev1 line {to.body_Codes[addr-1].ToString()} is PICKITEM {(to.body_Codes[addr-1].code == VM.OpCode.PICKITEM).ToString()}");
                   logger.Log($"log Y on line {addr}");
+
+                  // WILL TRACE VARIABLE ORIGIN "Z" IN ALTSTACK!
+                  // EXPECTS:  v[index] = b; // index and b must be variables! constants will fail!
+                  /*
+                  9 6a DUPFROMALTSTACK
+                  8 5Z PUSHZ
+                  7 c3 PICKITEM
+                  6 6a DUPFROMALTSTACK
+                  5 5Y PUSHY
+                  4 c3 PICKITEM
+                  3 6a DUPFROMALTSTACK
+                  2 5X PUSHX
+                  1 c3 PICKITEM
+                  */
+
+                  if(  (to.body_Codes[addr-7].code == VM.OpCode.PICKITEM)
+                    && (to.body_Codes[addr-4].code == VM.OpCode.PICKITEM)
+                    && (to.body_Codes[addr-1].code == VM.OpCode.PICKITEM)
+                    && (to.body_Codes[addr-9].code == VM.OpCode.DUPFROMALTSTACK)
+                    && (to.body_Codes[addr-6].code == VM.OpCode.DUPFROMALTSTACK)
+                    && (to.body_Codes[addr-3].code == VM.OpCode.DUPFROMALTSTACK)
+                    && ((to.body_Codes[addr-8].code >= VM.OpCode.PUSH0) && (to.body_Codes[addr-8].code <= VM.OpCode.PUSH16))
+                    && ((to.body_Codes[addr-5].code >= VM.OpCode.PUSH0) && (to.body_Codes[addr-5].code <= VM.OpCode.PUSH16))
+                    && ((to.body_Codes[addr-2].code >= VM.OpCode.PUSH0) && (to.body_Codes[addr-2].code <= VM.OpCode.PUSH16))
+                    )
+                    {
+                        logger.Log($"FORMULA IS CORRECT ON LINE {addr}");
+                    }
+
+
+
+
+
+
                     /*
                     _Convert1by1(VM.OpCode.PUSH2, null, to);
                     _Convert1by1(VM.OpCode.PICK, null, to);

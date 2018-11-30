@@ -666,6 +666,9 @@ namespace Neo.Compiler.MSIL
                 }
                 else if (src.tokenMethod.Contains("ByteArrayX::set_Item(System.Int32,System"))
                 {
+                  logger.Log($"log Y prev7 line {to.body_Codes[addr-7].ToString()}");
+                  logger.Log($"log Y prev6 line {to.body_Codes[addr-6].ToString()}");
+                  logger.Log($"log Y prev5 line {to.body_Codes[addr-5].ToString()}");
                   logger.Log($"log Y prev4 line {to.body_Codes[addr-4].ToString()}");
                   logger.Log($"log Y prev3 line {to.body_Codes[addr-3].ToString()}");
                   logger.Log($"log Y prev2 line {to.body_Codes[addr-2].ToString()}");

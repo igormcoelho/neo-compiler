@@ -679,7 +679,7 @@ namespace Neo.Compiler.MSIL
                 }
                 else if (src.tokenMethod.Contains("ByteArray::get_Item(System.Int32"))
                 {
-                    _Convert1by1(VM.OpCode.DUP, null, to);
+                    //_Convert1by1(VM.OpCode.DUP, null, to);
                     _Convert1by1(VM.OpCode.PUSH1, null, to);
                     _Convert1by1(VM.OpCode.SUBSTR, null, to);
                     return 0;

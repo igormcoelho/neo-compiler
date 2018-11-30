@@ -871,7 +871,7 @@ namespace Neo.Compiler.MSIL
                             _Convert1by1(VM.OpCode.SETITEM, null, to);          // stack: [ result, pushz, array , ... ]
                         }
                         else
-                            throw new Exception("neomachine only supports indexed bytearray attribution, example: byte[] v; int index = 0; byte b = 1; v[index] = b;");
+                            throw new Exception("neomachine currently supports only variable indexed bytearray attribution, example: byte[] v; int index = 0; byte b = 1; v[index] = b;");
                     } // end case
                     break;
                 case CodeEx.Stelem_Any:

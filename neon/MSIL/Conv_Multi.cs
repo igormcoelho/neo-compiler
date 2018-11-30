@@ -666,6 +666,7 @@ namespace Neo.Compiler.MSIL
                 }
                 else if (src.tokenMethod.Contains("ByteArrayX::set_Item(System.Int32,System"))
                 {
+                  logger.Log($"log Y was on line {addr}");
                   logger.Log($"log Y prev9 line {to.body_Codes[addr-9].ToString()}");
                   logger.Log($"log Y prev8 line {to.body_Codes[addr-8].ToString()}");
                   logger.Log($"log Y prev7 line {to.body_Codes[addr-7].ToString()}");
@@ -675,8 +676,8 @@ namespace Neo.Compiler.MSIL
                   logger.Log($"log Y prev3 line {to.body_Codes[addr-3].ToString()}");
                   logger.Log($"log Y prev2 line {to.body_Codes[addr-2].ToString()}");
                   logger.Log($"log Y prev1 line {to.body_Codes[addr-1].ToString()}");
+                  logger.Log($"log Y on line {addr}");
                     /*
-                    _Convert1by1(VM.OpCode.DROP, null, to);
                     _Convert1by1(VM.OpCode.PUSH2, null, to);
                     _Convert1by1(VM.OpCode.PICK, null, to);
                     _Convert1by1(VM.OpCode.PUSH2, null, to);
@@ -701,10 +702,12 @@ namespace Neo.Compiler.MSIL
                 else if (src.tokenMethod.Contains("ByteArrayX::get_Item(System.Int32"))
                 {
                     //_Convert1by1(VM.OpCode.DUP, null, to);
+                    logger.Log($"=======");
                     logger.Log($"log X prev4 line {to.body_Codes[addr-4].ToString()}");
                     logger.Log($"log X prev3 line {to.body_Codes[addr-3].ToString()}");
                     logger.Log($"log X prev2 line {to.body_Codes[addr-2].ToString()}");
                     logger.Log($"log X prev1 line {to.body_Codes[addr-1].ToString()}");
+                    logger.Log($"log was on line {addr}");
 
                     _Convert1by1(VM.OpCode.PUSH1, null, to);
                     _Convert1by1(VM.OpCode.SUBSTR, null, to);

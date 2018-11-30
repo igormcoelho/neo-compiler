@@ -257,6 +257,7 @@ namespace Neo.Compiler.MSIL
                         }
                         logger.Log("OPERANDO!");
                         logger.Log(code.ToString());
+                        logger.Log(code.Operand.ToString());
                         c.InitToken(code.Operand);
                         this.body_Codes.Add(c.addr, c);
                     }

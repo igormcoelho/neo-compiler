@@ -692,6 +692,11 @@ namespace Neo.Compiler.MSIL
                 else if (src.tokenMethod.Contains("ByteArrayX::get_Item(System.Int32"))
                 {
                     //_Convert1by1(VM.OpCode.DUP, null, to);
+                    logger.Log($"log X prev4 line {to.body_Codes[addr-4].ToString()}");
+                    logger.Log($"log X prev3 line {to.body_Codes[addr-3].ToString()}");
+                    logger.Log($"log X prev2 line {to.body_Codes[addr-2].ToString()}");
+                    logger.Log($"log X prev1 line {to.body_Codes[addr-1].ToString()}");
+
                     _Convert1by1(VM.OpCode.PUSH1, null, to);
                     _Convert1by1(VM.OpCode.SUBSTR, null, to);
                     logger.Log($"log on line {addr}");

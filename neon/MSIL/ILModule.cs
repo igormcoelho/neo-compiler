@@ -66,7 +66,7 @@ namespace Neo.Compiler.MSIL
         Mono.Cecil.TypeDefinition type;
         public Dictionary<string, ILField> fields = new Dictionary<string, ILField>();
         public Dictionary<string, ILMethod> methods = new Dictionary<string, ILMethod>();
-        public ILType(ILModule module, Mono.Cecil.TypeDefinition type)
+        public ILType(ILModule module, Mono.Cecil.TypeDefinition type, ILogger logger)
         {
             this.type = type;
             foreach (Mono.Cecil.FieldDefinition f in type.Fields)

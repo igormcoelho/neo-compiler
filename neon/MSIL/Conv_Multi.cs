@@ -695,6 +695,9 @@ namespace Neo.Compiler.MSIL
                     _Convert1by1(VM.OpCode.PUSH1, null, to);
                     _Convert1by1(VM.OpCode.SUBSTR, null, to);
                     logger.Log($"log on line {addr}");
+                    logger.Log($"log prev1 line {o.body_Codes[addr-1].ToString()}");
+                    logger.Log($"log prev2 line {o.body_Codes[addr-2].ToString()}");
+
                     return 0;
                 }
                 else if (src.tokenMethod == "System.UInt32 <PrivateImplementationDetails>::ComputeStringHash(System.String)")

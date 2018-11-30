@@ -666,6 +666,7 @@ namespace Neo.Compiler.MSIL
                 }
                 else if (src.tokenMethod.Contains("ByteArrayX::set_Item(System.Int32,System"))
                 {
+                    /*
                     _Convert1by1(VM.OpCode.DROP, null, to);
                     _Convert1by1(VM.OpCode.PUSH2, null, to);
                     _Convert1by1(VM.OpCode.PICK, null, to);
@@ -683,6 +684,9 @@ namespace Neo.Compiler.MSIL
                     _Convert1by1(VM.OpCode.SUB, null, to);
                     _Convert1by1(VM.OpCode.RIGHT, null, to);
                     _Convert1by1(VM.OpCode.CAT, null, to);
+                    */
+                    _Convert1by1(VM.OpCode.DROP, null, to);
+                    _Convert1by1(VM.OpCode.DROP, null, to);
                     return 0;
                 }
                 else if (src.tokenMethod.Contains("ByteArrayX::get_Item(System.Int32"))

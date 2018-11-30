@@ -659,18 +659,29 @@ namespace Neo.Compiler.MSIL
                 }
                 else if (src.tokenMethod.Contains("ByteArray::set_Item(System.Int32,System"))
                 {
+                    _Convert1by1(VM.OpCode.PUSH2, null, to);
+                    _Convert1by1(VM.OpCode.PICK, null, to);
+                    _Convert1by1(VM.OpCode.PUSH2, null, to);
+                    _Convert1by1(VM.OpCode.PICK, null, to);
+                    _Convert1by1(VM.OpCode.LEFT, null, to);
+                    _Convert1by1(VM.OpCode.SWAP, null, to);
                     _Convert1by1(VM.OpCode.CAT, null, to);
-                    _Convert1by1(VM.OpCode.CAT, null, to);
-                    _Convert1by1(VM.OpCode.CAT, null, to);
+                    _Convert1by1(VM.OpCode.ROT, null, to);
+                    _Convert1by1(VM.OpCode.ROT, null, to);
+                    _Convert1by1(VM.OpCode.OVER, null, to);
+                    _Convert1by1(VM.OpCode.ARRAYSIZE, null, to);
+                    _Convert1by1(VM.OpCode.DEC, null, to);
+                    _Convert1by1(VM.OpCode.SWAP, null, to);
+                    _Convert1by1(VM.OpCode.SUB, null, to);
+                    _Convert1by1(VM.OpCode.RIGHT, null, to);
                     _Convert1by1(VM.OpCode.CAT, null, to);
                     return 0;
                 }
                 else if (src.tokenMethod.Contains("ByteArray::get_Item(System.Int32"))
                 {
-                    _Convert1by1(VM.OpCode.CAT, null, to);
-                    _Convert1by1(VM.OpCode.CAT, null, to);
-                    _Convert1by1(VM.OpCode.CAT, null, to);
-                    _Convert1by1(VM.OpCode.CAT, null, to);
+                    _Convert1by1(VM.OpCode.DUP, null, to);
+                    _Convert1by1(VM.OpCode.PUSH1, null, to);
+                    _Convert1by1(VM.OpCode.SUBSTR, null, to);
                     return 0;
                 }
                 else if (src.tokenMethod == "System.UInt32 <PrivateImplementationDetails>::ComputeStringHash(System.String)")

@@ -866,7 +866,7 @@ namespace Neo.Compiler.MSIL
             ILType type;
             if (inModule.mapType.TryGetValue(typename, out type) == false)
             {
-                type = new ILType(null, method.DeclaringType);
+                type = new ILType(null, method.DeclaringType, logger);
                 inModule.mapType[typename] = type;
             }
 

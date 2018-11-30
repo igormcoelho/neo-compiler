@@ -46,12 +46,12 @@ namespace Neo.Compiler.MSIL
                     if (t.FullName.Contains(".My."))//vb 系统类不要
                         continue;
 
-                    mapType[t.FullName] = new ILType(this, t);
+                    mapType[t.FullName] = new ILType(this, t, logger);
                     if (t.HasNestedTypes)
                     {
                         foreach (var nt in t.NestedTypes)
                         {
-                            mapType[nt.FullName] = new ILType(this, nt);
+                            mapType[nt.FullName] = new ILType(this, nt, logger);
 
                         }
                     }

@@ -692,45 +692,52 @@ namespace Neo.Compiler.MSIL
                   1 c3 PICKITEM
                   */
 
-                  if(  (to.body_Codes[addr-7].code == VM.OpCode.PICKITEM)
+                  if(  (to.body_Codes[addr-1].code == VM.OpCode.PICKITEM)
                     && (to.body_Codes[addr-4].code == VM.OpCode.PICKITEM)
-                    && (to.body_Codes[addr-1].code == VM.OpCode.PICKITEM)
-                    && (to.body_Codes[addr-9].code == VM.OpCode.DUPFROMALTSTACK)
-                    && (to.body_Codes[addr-6].code == VM.OpCode.DUPFROMALTSTACK)
+                    && (to.body_Codes[addr-7].code == VM.OpCode.PICKITEM)
                     && (to.body_Codes[addr-3].code == VM.OpCode.DUPFROMALTSTACK)
-                    && ((to.body_Codes[addr-8].code >= VM.OpCode.PUSH0) && (to.body_Codes[addr-8].code <= VM.OpCode.PUSH16))
-                    && ((to.body_Codes[addr-5].code >= VM.OpCode.PUSH0) && (to.body_Codes[addr-5].code <= VM.OpCode.PUSH16))
+                    && (to.body_Codes[addr-6].code == VM.OpCode.DUPFROMALTSTACK)
+                    && (to.body_Codes[addr-9].code == VM.OpCode.DUPFROMALTSTACK)
                     && ((to.body_Codes[addr-2].code >= VM.OpCode.PUSH0) && (to.body_Codes[addr-2].code <= VM.OpCode.PUSH16))
+                    && ((to.body_Codes[addr-5].code >= VM.OpCode.PUSH0) && (to.body_Codes[addr-5].code <= VM.OpCode.PUSH16))
+                    && ((to.body_Codes[addr-8].code >= VM.OpCode.PUSH0) && (to.body_Codes[addr-8].code <= VM.OpCode.PUSH16))
                     )
                     {
                         logger.Log($"FORMULA IS CORRECT ON LINE {addr}");
+                        VM.OpCode PushZ = to.body_Codes[addr-8].code;
+                        // WILL REQUIRE TO PROCESS INFORMATION AND STORE IT AGAIN ON ALTSTACK CORRECT POSITION
+
+                        _Convert1by1(VM.OpCode.PUSH2, null, to);
+                        _Convert1by1(VM.OpCode.PICK, null, to);
+                        _Convert1by1(VM.OpCode.PUSH2, null, to);
+                        _Convert1by1(VM.OpCode.PICK, null, to);
+                        _Convert1by1(VM.OpCode.LEFT, null, to);
+                        _Convert1by1(VM.OpCode.SWAP, null, to);
+                        _Convert1by1(VM.OpCode.CAT, null, to);
+                        _Convert1by1(VM.OpCode.ROT, null, to);
+                        _Convert1by1(VM.OpCode.ROT, null, to);
+                        _Convert1by1(VM.OpCode.OVER, null, to);
+                        _Convert1by1(VM.OpCode.ARRAYSIZE, null, to);
+                        _Convert1by1(VM.OpCode.DEC, null, to);
+                        _Convert1by1(VM.OpCode.SWAP, null, to);
+                        _Convert1by1(VM.OpCode.SUB, null, to);
+                        _Convert1by1(VM.OpCode.RIGHT, null, to);
+                        _Convert1by1(VM.OpCode.CAT, null, to);
+
+                        // FINAL RESULT MUST GO BACK TO POSITION Z ON ALTSTACK
+                        logger.Log($"NEED TO PUT BACK ELEMENT {addr}");
+
+                        // get array
+                        // PushZ
+                        // result
+                        // setitem
+
+                        _Convert1by1(VM.OpCode.DUPFROMALTSTACK, null, to);  // stack: [ array , result , ... ]
+                        _Convert1by1(PushZ, null, to);                      // stack: [ pushz, array , result , ... ]
+                        _Convert1by1(VM.OpCode.ROT, null, to);              // stack: [ result, pushz, array , ... ]
+                        _Convert1by1(VM.OpCode.SETITEM, null, to);          // stack: [ result, pushz, array , ... ]
                     }
 
-
-
-
-
-
-                    /*
-                    _Convert1by1(VM.OpCode.PUSH2, null, to);
-                    _Convert1by1(VM.OpCode.PICK, null, to);
-                    _Convert1by1(VM.OpCode.PUSH2, null, to);
-                    _Convert1by1(VM.OpCode.PICK, null, to);
-                    _Convert1by1(VM.OpCode.LEFT, null, to);
-                    _Convert1by1(VM.OpCode.SWAP, null, to);
-                    _Convert1by1(VM.OpCode.CAT, null, to);
-                    _Convert1by1(VM.OpCode.ROT, null, to);
-                    _Convert1by1(VM.OpCode.ROT, null, to);
-                    _Convert1by1(VM.OpCode.OVER, null, to);
-                    _Convert1by1(VM.OpCode.ARRAYSIZE, null, to);
-                    _Convert1by1(VM.OpCode.DEC, null, to);
-                    _Convert1by1(VM.OpCode.SWAP, null, to);
-                    _Convert1by1(VM.OpCode.SUB, null, to);
-                    _Convert1by1(VM.OpCode.RIGHT, null, to);
-                    _Convert1by1(VM.OpCode.CAT, null, to);
-                    */
-                    _Convert1by1(VM.OpCode.DROP, null, to);
-                    _Convert1by1(VM.OpCode.DROP, null, to);
                     return 0;
                 }
                 else if (src.tokenMethod.Contains("ByteArrayX::get_Item(System.Int32"))

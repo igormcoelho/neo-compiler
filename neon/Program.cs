@@ -1,4 +1,4 @@
-﻿using Neo.Compiler.MSIL;
+using Neo.Compiler.MSIL;
 using System;
 using System.IO;
 using System.Reflection;
@@ -69,7 +69,7 @@ namespace Neo.Compiler
                 }
             }
 
-            ILModule mod = new ILModule();
+            ILModule mod = new ILModule(log);
             System.IO.Stream fs = null;
             System.IO.Stream fspdb = null;
 

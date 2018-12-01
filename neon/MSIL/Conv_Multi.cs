@@ -185,34 +185,40 @@ namespace Neo.Compiler.MSIL
 
             _Convert1by1(VM.OpCode.SETITEM, null, to);
         }
-        public bool IsSysCall(Mono.Cecil.MethodDefinition defs, out string name)
+
+        public bool IsSysCall(Mono.Cecil.MethodDefinition defs, out string[] names)
         {
+            names = null;
             if (defs == null)
             {
-                name = "";
                 return false;
             }
+
             foreach (var attr in defs.CustomAttributes)
             {
                 if (attr.AttributeType.Name == "SyscallAttribute")
                 {
                     var type = attr.ConstructorArguments[0].Type;
-                    var value = (string)attr.ConstructorArguments[0].Value;
+                    Mono.Cecil.CustomAttributeArgument[] val = (Mono.Cecil.CustomAttributeArgument[])attr.ConstructorArguments[0].Value;
 
-                    //dosth
-                    name = value;
+                    if(val.Length < 1)
+                    {
+                        return false;
+                    }
+
+                    names = new string[val.Length];
+                    for (var j = 0; j < val.Length; j++)
+                    {
+                        names[j] = ((string)val[j].Value);
+                    }
                     return true;
-
-
-
                 }
                 //if(attr.t)
             }
-            name = "";
+
             return false;
-
-
         }
+
         public bool IsAppCall(Mono.Cecil.MethodDefinition defs, out byte[] hash)
         {
             if (defs == null)
@@ -376,6 +382,7 @@ namespace Neo.Compiler.MSIL
 
             int calltype = 0;
             string callname = "";
+            string[] callnames = null;
             int callpcount = 0;
             byte[] callhash = null;
             VM.OpCode callcode = VM.OpCode.NOP;
@@ -422,7 +429,7 @@ namespace Neo.Compiler.MSIL
             //{
             //    calltype = 7;
             //}
-            else if (IsSysCall(defs, out callname))
+            else if (IsSysCall(defs, out callnames))
             {
                 calltype = 3;
             }
@@ -767,22 +774,25 @@ namespace Neo.Compiler.MSIL
             }
             else if (calltype == 3)
             {
-                byte[] bytes = null;
-                if (this.outModule.option.useSysCallInteropHash)
+                for(var i = 0; i < callnames.Length; i++)
                 {
-                    //now neovm use ineropMethod hash for syscall.
-                    bytes = BitConverter.GetBytes(callname.ToInteropMethodHash());
+                    byte[] bytes = null;
+                    if (this.outModule.option.useSysCallInteropHash)
+                    {
+                        //now neovm use ineropMethod hash for syscall.
+                        bytes = BitConverter.GetBytes(callnames[i].ToInteropMethodHash());
+                    }
+                    else
+                    {
+                        bytes = System.Text.Encoding.UTF8.GetBytes(callnames[i]);
+                        if (bytes.Length > 252) throw new Exception("string is to long");
+                    }
+                    byte[] outbytes = new byte[bytes.Length + 1];
+                    outbytes[0] = (byte)bytes.Length;
+                    Array.Copy(bytes, 0, outbytes, 1, bytes.Length);
+                    //bytes.Prepend 函数在 dotnet framework 4.6 编译不过
+                    _Convert1by1(VM.OpCode.SYSCALL, null, to, outbytes);
                 }
-                else
-                {
-                    bytes = System.Text.Encoding.UTF8.GetBytes(callname);
-                    if (bytes.Length > 252) throw new Exception("string is to long");
-                }
-                byte[] outbytes = new byte[bytes.Length + 1];
-                outbytes[0] = (byte)bytes.Length;
-                Array.Copy(bytes, 0, outbytes, 1, bytes.Length);
-                //bytes.Prepend 函数在 dotnet framework 4.6 编译不过
-                _Convert1by1(VM.OpCode.SYSCALL, null, to, outbytes);
                 return 0;
             }
             else if (calltype == 4)

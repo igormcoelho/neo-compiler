@@ -13,7 +13,7 @@ namespace Neo.Compiler.MSIL
         public List<string> moduleref = new List<string>();
         public Dictionary<string, ILType> mapType = new Dictionary<string, ILType>();
         public ILogger logger;
-        public ILModule(ILogger _logger)
+        public ILModule(ILogger _logger = null)
         {
             this.logger = _logger;
         }
@@ -201,7 +201,7 @@ namespace Neo.Compiler.MSIL
 
     public class ILMethod
     {
-        public ILMethod(ILType type, Mono.Cecil.MethodDefinition method, ILogger logger)
+        public ILMethod(ILType type, Mono.Cecil.MethodDefinition method, ILogger logger = null)
         {
             this.method = method;
             if (method != null)

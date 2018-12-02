@@ -210,9 +210,9 @@ namespace Neo.Compiler.MSIL
                     //var type = attr.ConstructorArguments[0].Type;
                     //var value = (string)attr.ConstructorArguments[0].Value;
 
-                    VM.OpCode val1 = (VM.OpCode)attr.ConstructorArguments[0].Value;
-                    string val2 = (string)attr.ConstructorArguments[1].Value;
-                    bool val3 = (bool) attr.ConstructorArguments[2].Value;
+                    opcodes[i] = (VM.OpCode)attr.ConstructorArguments[0].Value;
+                    names[i] = (string)attr.ConstructorArguments[1].Value;
+                    isHex[i] = (bool) attr.ConstructorArguments[2].Value;
 
                     logger.Log($"Arguments1 {val1.ToString()} 2 {val2.ToString()} 3 {val3.ToString()}");
                     /*

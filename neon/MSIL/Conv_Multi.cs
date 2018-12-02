@@ -196,6 +196,11 @@ namespace Neo.Compiler.MSIL
                 return false;
             }
 
+            if(defs.CustomAttributes.Count == 0)
+            {
+                return false;
+            }
+
             logger.Log($"count loggers {defs.CustomAttributes.Count}");
             opcodes = new VM.OpCode[defs.CustomAttributes.Count];
             names   = new string[defs.CustomAttributes.Count];

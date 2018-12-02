@@ -210,6 +210,11 @@ namespace Neo.Compiler.MSIL
                     //var type = attr.ConstructorArguments[0].Type;
                     //var value = (string)attr.ConstructorArguments[0].Value;
 
+                    VM.Opcode val1 = attr.ConstructorArguments[0].Value;
+                    string val2 = attr.ConstructorArguments[1].Value;
+                    bool val3 = attr.ConstructorArguments[2].Value;
+
+                    logger.Log($"Arguments1 {val1.ToString()} 2 {val2.ToString()} 3 {val3.ToString()}");
                     /*
                     var type = attr.ConstructorArguments[0].Type;
 

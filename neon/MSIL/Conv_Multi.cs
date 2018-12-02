@@ -214,6 +214,18 @@ namespace Neo.Compiler.MSIL
                     names[i] = (string)attr.ConstructorArguments[1].Value;
                     isHex[i] = (bool) attr.ConstructorArguments[2].Value;
 
+                    if((names[i] != "") && (opcodes[i] != VM.OpCode.SYSCALL))
+                    {
+                        throw new Exception("neomachine Inline currently supports extensions only for SYSCALL opcode!");
+                        return false;
+                    }
+
+                    if((opcodes[i] == VM.OpCode.SYSCALL) && (isHex[i] || (names[i] == "")))
+                    {
+                        throw new Exception("neomachine Inline currently supports SYSCALL only with plain non-empty text (not hex)!");
+                        return false;
+                    }
+
                     //logger.Log($"Arguments1 {val1.ToString()} 2 {val2.ToString()} 3 {val3.ToString()}");
                     /*
                     var type = attr.ConstructorArguments[0].Type;
@@ -444,6 +456,9 @@ namespace Neo.Compiler.MSIL
             byte[] callhash = null;
             VM.OpCode callcode = VM.OpCode.NOP;
             VM.OpCode[] callcodes = null;
+            string[] callnames = null;
+            bool[] isHex = null;
+
 
             Mono.Cecil.MethodDefinition defs = null;
             try
@@ -482,10 +497,10 @@ namespace Neo.Compiler.MSIL
                 //    throw new Exception("Can not find OpCall:" + callname);
                 //}
             }
-            //else if (IsOpCodesCall(defs, out callcodes))
-            //{
-            //    calltype = 7;
-            //}
+            else if (IsInlineCall(defs, out callcodes, out callnames, out ishex)))
+            {
+                calltype = 7;
+            }
             else if (IsSysCall(defs, out callname))
             {
                 calltype = 3;
@@ -853,17 +868,22 @@ namespace Neo.Compiler.MSIL
             }
             var md = src.tokenUnknown as Mono.Cecil.MethodReference;
             var pcount = md.Parameters.Count;
+            // if keyword 'this' is used on method
             bool havethis = md.HasThis;
             if (calltype == 2)
             {
                 //opcode call
             }
             else
-            {//翻转参数顺序
+            {
+                // en: flip parameter order
+                // 翻转参数顺序
+
 
                 //如果是syscall 并且有this的，翻转范围加一
-                if (calltype == 3 && havethis)
-                    pcount++;
+                if(havethis)
+                    if ((calltype == 3) || ((calltype == 7) && (callcodes[0] == VM.OpCode.SYSCALL))
+                        pcount++;
 
                 _Convert1by1(VM.OpCode.NOP, src, to);
                 if (pcount <= 1)
@@ -945,6 +965,36 @@ namespace Neo.Compiler.MSIL
                 Array.Copy(bytes, 0, outbytes, 1, bytes.Length);
                 //bytes.Prepend 函数在 dotnet framework 4.6 编译不过
                 _Convert1by1(VM.OpCode.SYSCALL, null, to, outbytes);
+                return 0;
+            }
+            else if (calltype == 7)
+            {
+                for (var j = 0; j < callcodes.Length; j++)
+                {
+                    if(callcodes[i] == VM.OpCode.SYSCALL)
+                    {
+                        byte[] bytes = null;
+                        if (this.outModule.option.useSysCallInteropHash)
+                        {
+                            //now neovm use ineropMethod hash for syscall.
+                            bytes = BitConverter.GetBytes(callname.ToInteropMethodHash());
+                        }
+                        else
+                        {
+                            bytes = System.Text.Encoding.UTF8.GetBytes(callname);
+                            if (bytes.Length > 252) throw new Exception("string is to long");
+                        }
+                        byte[] outbytes = new byte[bytes.Length + 1];
+                        outbytes[0] = (byte)bytes.Length;
+                        Array.Copy(bytes, 0, outbytes, 1, bytes.Length);
+                        //bytes.Prepend 函数在 dotnet framework 4.6 编译不过
+                        _Convert1by1(VM.OpCode.SYSCALL, null, to, outbytes);
+                    }
+                    else
+                    {
+                        _Convert1by1(callcodes[j], src, to);
+                    }
+                }
                 return 0;
             }
             else if (calltype == 4)

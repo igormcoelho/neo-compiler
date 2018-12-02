@@ -497,7 +497,7 @@ namespace Neo.Compiler.MSIL
                 //    throw new Exception("Can not find OpCall:" + callname);
                 //}
             }
-            else if (IsInlineCall(defs, out callcodes, out callnames, out ishex)))
+            else if (IsInlineCall(defs, out callcodes, out callnames, out ishex))
             {
                 calltype = 7;
             }
@@ -882,7 +882,7 @@ namespace Neo.Compiler.MSIL
 
                 //如果是syscall 并且有this的，翻转范围加一
                 if(havethis)
-                    if ((calltype == 3) || ((calltype == 7) && (callcodes[0] == VM.OpCode.SYSCALL))
+                    if ((calltype == 3) || ((calltype == 7) && (callcodes[0] == VM.OpCode.SYSCALL)))
                         pcount++;
 
                 _Convert1by1(VM.OpCode.NOP, src, to);

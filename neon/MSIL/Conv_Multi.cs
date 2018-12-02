@@ -185,6 +185,64 @@ namespace Neo.Compiler.MSIL
 
             _Convert1by1(VM.OpCode.SETITEM, null, to);
         }
+
+        public bool IsInlineCall(Mono.Cecil.MethodDefinition defs, out VM.OpCode[] opcodes, out string[] names, out bool[] isHex)
+        {
+            opcodes = null;
+            names = null;
+            isHex = null;
+
+            if (defs == null)
+            {
+                return false;
+            }
+
+            if(defs.CustomAttributes.Count == 0)
+            {
+                return false;
+            }
+
+            opcodes = new VM.OpCode[defs.CustomAttributes.Count];
+            names   = new string[defs.CustomAttributes.Count];
+            isHex   = new bool[defs.CustomAttributes.Count];
+            int i = 0;
+
+            foreach (var attr in defs.CustomAttributes)
+            {
+                if (attr.AttributeType.Name == "InlineAttribute")
+                {
+                    opcodes[i] = (VM.OpCode)attr.ConstructorArguments[0].Value;
+                    names[i] = (string)attr.ConstructorArguments[1].Value;
+                    isHex[i] = (bool) attr.ConstructorArguments[2].Value;
+
+                    if((names[i] != "") && (opcodes[i] != VM.OpCode.SYSCALL))
+                    {
+                        throw new Exception("neomachine Inline currently supports extensions only for SYSCALL opcode!");
+                        return false;
+                    }
+
+                    if((opcodes[i] == VM.OpCode.SYSCALL) && (isHex[i] || (names[i] == "")))
+                    {
+                        throw new Exception("neomachine Inline currently supports SYSCALL only with plain non-empty text (not hex)!");
+                        return false;
+                    }
+
+                    i++;
+                }
+                else
+                {
+                    // different attribute, cannot mix!
+                    opcodes = null;
+                    names = null;
+                    isHex = null;
+                    throw new Exception("Cannot mix Inline attribute with others!");
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
         public bool IsSysCall(Mono.Cecil.MethodDefinition defs, out string name)
         {
             if (defs == null)
@@ -380,6 +438,8 @@ namespace Neo.Compiler.MSIL
             byte[] callhash = null;
             VM.OpCode callcode = VM.OpCode.NOP;
             VM.OpCode[] callcodes = null;
+            string[] callnames = null;
+            bool[] isHex = null;
 
             Mono.Cecil.MethodDefinition defs = null;
             try
@@ -425,6 +485,10 @@ namespace Neo.Compiler.MSIL
             else if (IsSysCall(defs, out callname))
             {
                 calltype = 3;
+            }
+            else if (IsInlineCall(defs, out callcodes, out callnames, out isHex))
+            {
+                calltype = 7;
             }
             else if (IsAppCall(defs, out callhash))
             {
@@ -700,8 +764,9 @@ namespace Neo.Compiler.MSIL
             {//翻转参数顺序
 
                 //如果是syscall 并且有this的，翻转范围加一
-                if (calltype == 3 && havethis)
-                    pcount++;
+                if(havethis)
+                    if ((calltype == 3) || ((calltype == 7) && (callcodes[0] == VM.OpCode.SYSCALL)))
+                        pcount++;
 
                 _Convert1by1(VM.OpCode.NOP, src, to);
                 if (pcount <= 1)
@@ -783,6 +848,36 @@ namespace Neo.Compiler.MSIL
                 Array.Copy(bytes, 0, outbytes, 1, bytes.Length);
                 //bytes.Prepend 函数在 dotnet framework 4.6 编译不过
                 _Convert1by1(VM.OpCode.SYSCALL, null, to, outbytes);
+                return 0;
+            }
+            else if (calltype == 7)
+            {
+                for (var j = 0; j < callcodes.Length; j++)
+                {
+                    if(callcodes[j] == VM.OpCode.SYSCALL)
+                    {
+                        byte[] bytes = null;
+                        if (this.outModule.option.useSysCallInteropHash)
+                        {
+                            //now neovm use ineropMethod hash for syscall.
+                            bytes = BitConverter.GetBytes(callnames[j].ToInteropMethodHash());
+                        }
+                        else
+                        {
+                            bytes = System.Text.Encoding.UTF8.GetBytes(callnames[j]);
+                            if (bytes.Length > 252) throw new Exception("string is to long");
+                        }
+                        byte[] outbytes = new byte[bytes.Length + 1];
+                        outbytes[0] = (byte)bytes.Length;
+                        Array.Copy(bytes, 0, outbytes, 1, bytes.Length);
+                        //bytes.Prepend 函数在 dotnet framework 4.6 编译不过
+                        _Convert1by1(VM.OpCode.SYSCALL, null, to, outbytes);
+                    }
+                    else
+                    {
+                        _Convert1by1(callcodes[j], src, to);
+                    }
+                }
                 return 0;
             }
             else if (calltype == 4)

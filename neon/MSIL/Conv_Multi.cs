@@ -497,7 +497,7 @@ namespace Neo.Compiler.MSIL
                 //    throw new Exception("Can not find OpCall:" + callname);
                 //}
             }
-            else if (IsInlineCall(defs, out callcodes, out callnames, out ishex))
+            else if (IsInlineCall(defs, out callcodes, out callnames, out isHex))
             {
                 calltype = 7;
             }

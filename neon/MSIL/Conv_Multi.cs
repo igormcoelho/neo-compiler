@@ -184,6 +184,38 @@ namespace Neo.Compiler.MSIL
 
             _Convert1by1(VM.OpCode.SETITEM, null, to);
         }
+
+        public bool IsInlineCall(Mono.Cecil.MethodDefinition defs, out VM.OpCode opcode, out string name, out bool isHex)
+        {
+            if (defs == null)
+            {
+                name = "";
+                return false;
+            }
+
+            foreach (var attr in defs.CustomAttributes)
+            {
+                if (attr.AttributeType.Name == "InlineAttribute")
+                {
+                    logger.Log("FOUND INLINE ATTR!");
+                    //var type = attr.ConstructorArguments[0].Type;
+                    //var value = (string)attr.ConstructorArguments[0].Value;
+
+                    //dosth
+                    //name = value;
+                    //return true;
+
+
+
+                }
+                //if(attr.t)
+            }
+            name = "";
+            return false;
+
+
+        }
+
         public bool IsSysCall(Mono.Cecil.MethodDefinition defs, out string name)
         {
             if (defs == null)

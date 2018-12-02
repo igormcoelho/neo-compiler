@@ -214,7 +214,7 @@ namespace Neo.Compiler.MSIL
                     names[i] = (string)attr.ConstructorArguments[1].Value;
                     isHex[i] = (bool) attr.ConstructorArguments[2].Value;
 
-                    logger.Log($"Arguments1 {val1.ToString()} 2 {val2.ToString()} 3 {val3.ToString()}");
+                    //logger.Log($"Arguments1 {val1.ToString()} 2 {val2.ToString()} 3 {val3.ToString()}");
                     /*
                     var type = attr.ConstructorArguments[0].Type;
 

@@ -197,27 +197,51 @@ namespace Neo.Compiler.MSIL
             }
 
             logger.Log($"count loggers {defs.CustomAttributes.Count}");
+            opcodes = new VM.OpCode[defs.CustomAttributes.Count];
+            names   = new string[defs.CustomAttributes.Count];
+            isHex   = new bool[defs.CustomAttributes.Count];
+            int i = 0;
+
             foreach (var attr in defs.CustomAttributes)
             {
                 if (attr.AttributeType.Name == "InlineAttribute")
                 {
-                    logger.Log("FOUND INLINE ATTR!");
+                    logger.Log($"FOUND INLINE ATTR! Arguments = {attr.ConstructorArguments.Count}");
                     //var type = attr.ConstructorArguments[0].Type;
                     //var value = (string)attr.ConstructorArguments[0].Value;
 
+                    /*
+                    var type = attr.ConstructorArguments[0].Type;
+
+                    Mono.Cecil.CustomAttributeArgument[] val = (Mono.Cecil.CustomAttributeArgument[])attr.ConstructorArguments[0].Value;
+
+                    opcodes = new VM.OpCode[val.Length];
+                    for (var j = 0; j < val.Length; j++)
+                    {
+                        opcodes[j] = ((VM.OpCode)(byte)val[j].Value);
+                    }
+                    */
                     //dosth
                     //name = value;
                     //return true;
 
 
-
+                    i++;
                 }
-                else
+                else // different attribute, cannot mix!
+                {
                     logger.Log($"FOUND INLINE ATTR: {attr.AttributeType.Name}");
+
+                    opcodes = null;
+                    names = null;
+                    isHex = null;
+                    throw new Exception("Cannot mix Inline attribute with others!");
+                    return false;
+                }
                 //if(attr.t)
             }
 
-            return false;
+            return true;
         }
 
         public bool IsSysCall(Mono.Cecil.MethodDefinition defs, out string name)

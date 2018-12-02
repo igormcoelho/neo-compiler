@@ -971,17 +971,17 @@ namespace Neo.Compiler.MSIL
             {
                 for (var j = 0; j < callcodes.Length; j++)
                 {
-                    if(callcodes[i] == VM.OpCode.SYSCALL)
+                    if(callcodes[j] == VM.OpCode.SYSCALL)
                     {
                         byte[] bytes = null;
                         if (this.outModule.option.useSysCallInteropHash)
                         {
                             //now neovm use ineropMethod hash for syscall.
-                            bytes = BitConverter.GetBytes(callname.ToInteropMethodHash());
+                            bytes = BitConverter.GetBytes(callnames[j].ToInteropMethodHash());
                         }
                         else
                         {
-                            bytes = System.Text.Encoding.UTF8.GetBytes(callname);
+                            bytes = System.Text.Encoding.UTF8.GetBytes(callnames[j]);
                             if (bytes.Length > 252) throw new Exception("string is to long");
                         }
                         byte[] outbytes = new byte[bytes.Length + 1];

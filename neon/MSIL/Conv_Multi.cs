@@ -187,7 +187,7 @@ namespace Neo.Compiler.MSIL
 
         public bool IsInlineCall(Mono.Cecil.MethodDefinition defs, out VM.OpCode opcode, out string name, out bool isHex)
         {
-            opcode = null;
+            opcode = OpCode.NOP;
             name = "";
             isHex = false;
 
@@ -213,7 +213,7 @@ namespace Neo.Compiler.MSIL
                 }
                 //if(attr.t)
             }
-            
+
             return false;
         }
 

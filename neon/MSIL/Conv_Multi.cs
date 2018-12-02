@@ -211,6 +211,8 @@ namespace Neo.Compiler.MSIL
 
 
                 }
+                else
+                    logger.Log($"FOUND INLINE ATTR: {attr.AttributeType.Name}");
                 //if(attr.t)
             }
 

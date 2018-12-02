@@ -185,17 +185,18 @@ namespace Neo.Compiler.MSIL
             _Convert1by1(VM.OpCode.SETITEM, null, to);
         }
 
-        public bool IsInlineCall(Mono.Cecil.MethodDefinition defs, out VM.OpCode opcode, out string name, out bool isHex)
+        public bool IsInlineCall(Mono.Cecil.MethodDefinition defs, out VM.OpCode[] opcodes, out string[] names, out bool[] isHex)
         {
-            opcode = VM.OpCode.NOP;
-            name = "";
-            isHex = false;
+            opcodes = null;
+            names = null;
+            isHex = null;
 
             if (defs == null)
             {
                 return false;
             }
 
+            logger.log($"count loggers {defs.CustomAttributes.Count}");
             foreach (var attr in defs.CustomAttributes)
             {
                 if (attr.AttributeType.Name == "InlineAttribute")

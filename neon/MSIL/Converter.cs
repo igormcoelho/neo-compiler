@@ -173,8 +173,6 @@ namespace Neo.Compiler.MSIL
 
                         byte[] outcall; string name; VM.OpCode[] opcodes;
                         string[] extension; bool[] isHex;
-                        if (IsInlineCall(m.Value.method, out opcodes, out extension, out isHex))
-                            continue;
                         if (IsAppCall(m.Value.method, out outcall))
                             continue;
                         if (IsNonCall(m.Value.method))
@@ -182,6 +180,8 @@ namespace Neo.Compiler.MSIL
                         if (IsOpCall(m.Value.method, out opcodes))
                             continue;
                         if (IsSysCall(m.Value.method, out name))
+                            continue;
+                        if (IsInlineCall(m.Value.method, out opcodes, out extension, out isHex))
                             continue;
 
                         this.ConvertMethod(m.Value, nm);

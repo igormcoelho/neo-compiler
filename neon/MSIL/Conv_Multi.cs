@@ -196,7 +196,7 @@ namespace Neo.Compiler.MSIL
                 return false;
             }
 
-            logger.log($"count loggers {defs.CustomAttributes.Count}");
+            logger.Log($"count loggers {defs.CustomAttributes.Count}");
             foreach (var attr in defs.CustomAttributes)
             {
                 if (attr.AttributeType.Name == "InlineAttribute")

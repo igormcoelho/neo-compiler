@@ -172,12 +172,12 @@ namespace Neo.Compiler.MSIL
                         }
 
                         byte[] outcall; string name; VM.OpCode[] opcodes;
-                        string[] extension; bool[] isHex;
+                        string[] opdata; bool[] isHex;
                         if (IsAppCall(m.Value.method, out outcall))
                             continue;
                         if (IsNonCall(m.Value.method))
                             continue;
-                        if (IsInlineCall(m.Value.method, out opcodes, out extension, out isHex))
+                        if (IsInlineCall(m.Value.method, out opcodes, out opdata, out isHex))
                             continue;
                         if (IsOpCall(m.Value.method, out opcodes))
                             continue;

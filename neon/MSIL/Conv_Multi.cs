@@ -448,7 +448,7 @@ namespace Neo.Compiler.MSIL
             byte[] callhash = null;
             VM.OpCode callcode = VM.OpCode.NOP;
             VM.OpCode[] callcodes = null;
-            string[] callnames = null;
+            string[] calldata = null;
             bool[] isHex = null;
 
             Mono.Cecil.MethodDefinition defs = null;
@@ -496,7 +496,7 @@ namespace Neo.Compiler.MSIL
             {
                 calltype = 3;
             }
-            else if (IsInlineCall(defs, out callcodes, out callnames, out isHex))
+            else if (IsInlineCall(defs, out callcodes, out calldata, out isHex))
             {
                 calltype = 7;
             }
@@ -870,11 +870,11 @@ namespace Neo.Compiler.MSIL
                         if (this.outModule.option.useSysCallInteropHash)
                         {
                             //now neovm use ineropMethod hash for syscall.
-                            bytes = BitConverter.GetBytes(callnames[j].ToInteropMethodHash());
+                            bytes = BitConverter.GetBytes(calldata[j].ToInteropMethodHash());
                         }
                         else
                         {
-                            bytes = System.Text.Encoding.UTF8.GetBytes(callnames[j]);
+                            bytes = System.Text.Encoding.UTF8.GetBytes(calldata[j]);
                             if (bytes.Length > 252) throw new Exception("string is to long");
                         }
                         byte[] outbytes = new byte[bytes.Length + 1];

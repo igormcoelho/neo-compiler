@@ -206,7 +206,7 @@ namespace Neo.Compiler.MSIL
             opcodes = new VM.OpCode[defs.CustomAttributes.Count];
             names   = new string[defs.CustomAttributes.Count];
             isHex   = new bool[defs.CustomAttributes.Count];
-            
+
             int i = 0;
 
             foreach (var attr in defs.CustomAttributes)
@@ -246,7 +246,7 @@ namespace Neo.Compiler.MSIL
             if(i > 0)
             {
                 // InlineAttribute together with different attribute, cannot mix!
-                throw new Exception("Cannot mix Inline attribute with others!");
+                throw new Exception("neomachine Cannot mix Inline attribute with others!");
             }
 
             return false;

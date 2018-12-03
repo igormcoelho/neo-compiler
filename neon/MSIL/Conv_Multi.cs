@@ -199,12 +199,14 @@ namespace Neo.Compiler.MSIL
 
             if(defs.CustomAttributes.Count == 0)
             {
+                // no InlineAttribute
                 return false;
             }
 
             opcodes = new VM.OpCode[defs.CustomAttributes.Count];
             names   = new string[defs.CustomAttributes.Count];
             isHex   = new bool[defs.CustomAttributes.Count];
+            
             int i = 0;
 
             foreach (var attr in defs.CustomAttributes)
@@ -229,17 +231,25 @@ namespace Neo.Compiler.MSIL
 
                     i++;
                 }
-                else
-                {
-                    // different attribute, cannot mix!
-                    opcodes = null;
-                    names = null;
-                    isHex = null;
-                    throw new Exception("Cannot mix Inline attribute with others!");
-                    return false;
-                }
             }
-            return true;
+
+            if(i == defs.CustomAttributes.Count)
+            {
+                // all attributes are InlineAttribute
+                return true;
+            }
+
+            opcodes = null;
+            names = null;
+            isHex = null;
+
+            if(i > 0)
+            {
+                // InlineAttribute together with different attribute, cannot mix!
+                throw new Exception("Cannot mix Inline attribute with others!");
+            }
+
+            return false;
         }
 
 

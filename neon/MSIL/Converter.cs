@@ -177,11 +177,11 @@ namespace Neo.Compiler.MSIL
                             continue;
                         if (IsNonCall(m.Value.method))
                             continue;
+                        if (IsInlineCall(m.Value.method, out opcodes, out extension, out isHex))
+                            continue;
                         if (IsOpCall(m.Value.method, out opcodes))
                             continue;
                         if (IsSysCall(m.Value.method, out name))
-                            continue;
-                        if (IsInlineCall(m.Value.method, out opcodes, out extension, out isHex))
                             continue;
 
                         this.ConvertMethod(m.Value, nm);

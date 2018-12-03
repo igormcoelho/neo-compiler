@@ -886,6 +886,7 @@ namespace Neo.Compiler.MSIL
                     else
                     {
                         _Convert1by1(callcodes[j], src, to);
+                        // TODO: consider calldata[j] for other opcodes (PUSHDATA2, etc...) using isHex (example: "01ab" ...)
                     }
                 }
                 return 0;

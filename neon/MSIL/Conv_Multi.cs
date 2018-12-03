@@ -186,10 +186,10 @@ namespace Neo.Compiler.MSIL
             _Convert1by1(VM.OpCode.SETITEM, null, to);
         }
 
-        public bool IsInlineCall(Mono.Cecil.MethodDefinition defs, out VM.OpCode[] opcodes, out string[] names, out bool[] isHex)
+        public bool IsInlineCall(Mono.Cecil.MethodDefinition defs, out VM.OpCode[] opcodes, out string[] opdata, out bool[] isHex)
         {
             opcodes = null;
-            names = null;
+            opdata = null;
             isHex = null;
 
             if (defs == null)
@@ -204,7 +204,7 @@ namespace Neo.Compiler.MSIL
             }
 
             opcodes = new VM.OpCode[defs.CustomAttributes.Count];
-            names   = new string[defs.CustomAttributes.Count];
+            opdata  = new string[defs.CustomAttributes.Count];
             isHex   = new bool[defs.CustomAttributes.Count];
 
             int i = 0;
@@ -214,16 +214,16 @@ namespace Neo.Compiler.MSIL
                 if (attr.AttributeType.Name == "InlineAttribute")
                 {
                     opcodes[i] = (VM.OpCode)attr.ConstructorArguments[0].Value;
-                    names[i] = (string)attr.ConstructorArguments[1].Value;
+                    opdata[i] = (string)attr.ConstructorArguments[1].Value;
                     isHex[i] = (bool) attr.ConstructorArguments[2].Value;
 
-                    if((names[i] != "") && (opcodes[i] != VM.OpCode.SYSCALL))
+                    if((opdata[i] != "") && (opcodes[i] != VM.OpCode.SYSCALL))
                     {
                         throw new Exception("neomachine Inline currently supports extensions only for SYSCALL opcode!");
                         return false;
                     }
 
-                    if((opcodes[i] == VM.OpCode.SYSCALL) && (isHex[i] || (names[i] == "")))
+                    if((opcodes[i] == VM.OpCode.SYSCALL) && (isHex[i] || (opdata[i] == "")))
                     {
                         throw new Exception("neomachine Inline currently supports SYSCALL only with plain non-empty text (not hex)!");
                         return false;
@@ -240,7 +240,7 @@ namespace Neo.Compiler.MSIL
             }
 
             opcodes = null;
-            names = null;
+            opdata = null;
             isHex = null;
 
             if(i > 0)

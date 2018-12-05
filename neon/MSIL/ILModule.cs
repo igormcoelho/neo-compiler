@@ -564,7 +564,7 @@ namespace Neo.Compiler.MSIL
         public string tokenStr;
         public void InitToken(object _p, ILogger logger = null)
         {
-            if(logger != null)
+            if((logger != null) && (_p != null))
                 logger.Log($"INITTOKEN: {_p.ToString()}");
             this.tokenUnknown = _p;
             switch (code)

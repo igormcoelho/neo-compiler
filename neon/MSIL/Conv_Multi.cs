@@ -452,7 +452,7 @@ namespace Neo.Compiler.MSIL
             string callname = "";
             int callpcount = 0;
             byte[] callhash = null;
-            VM.OpCode callcode = VM.OpCode.NOP;
+            //VM.OpCode callcode = VM.OpCode.NOP;
             VM.OpCode[] callcodes = null;
             string[] calldata = null;
             bool[] isHex = null;
@@ -875,6 +875,7 @@ namespace Neo.Compiler.MSIL
             {
                 for (var j = 0; j < callcodes.Length; j++)
                 {
+                    logger.Log($"callcode[{j}]={callcodes[j].ToString()} opdata={calldata[j]} isHex={isHex[j].ToString()}");
                     if(callcodes[j] == VM.OpCode.SYSCALL)
                     {
                         if(isHex[j])

@@ -335,18 +335,6 @@ namespace Neo.Compiler.MSIL
                     opdata[i] = (string)attr.ConstructorArguments[1].Value;
                     isHex[i] = (bool) attr.ConstructorArguments[2].Value;
 
-                    if((opdata[i] != "") && (opcodes[i] != VM.OpCode.SYSCALL))
-                    {
-                        throw new Exception("neomachine OpCodeAttribute field OpData currently supported only for SYSCALL opcode!");
-                        return false;
-                    }
-
-                    if((opcodes[i] == VM.OpCode.SYSCALL) && (isHex[i] || (opdata[i] == "")))
-                    {
-                        throw new Exception("neomachine OpCodeAttribute field OpData currently supports SYSCALL only with plain non-empty text (not hex)!");
-                        return false;
-                    }
-
                     i++;
                 }
                 else if (attr.AttributeType.Name == "SyscallAttribute")
@@ -889,6 +877,11 @@ namespace Neo.Compiler.MSIL
                 {
                     if(callcodes[j] == VM.OpCode.SYSCALL)
                     {
+                        if(isHex[j])
+                        {
+                            throw new Exception("neomachine OpCodeAttribute field OpData currently supports SYSCALL only with plain non-empty text (not hex)!");
+                        }
+
                         byte[] bytes = null;
                         if (this.outModule.option.useSysCallInteropHash)
                         {
@@ -908,8 +901,13 @@ namespace Neo.Compiler.MSIL
                     }
                     else
                     {
-                        _Convert1by1(callcodes[j], src, to);
-                        // TODO: consider calldata[j] for other opcodes (PUSHDATA2, etc...) using isHex (example: "01ab" ...)
+                        if(!isHex[j])
+                        {
+                            throw new Exception("neomachine general OpCodeAttribute field OpData currently supports only hex!");
+                        }
+
+                        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(calldata[j]);
+                        _Convert1by1(callcodes[j], src, to, bytes);
                     }
                 }
                 return 0;

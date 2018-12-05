@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
+using System.Globalization;
 
 namespace Neo.Compiler.MSIL
 {
@@ -913,10 +914,10 @@ namespace Neo.Compiler.MSIL
                             {
                                 // convert hex string to byte[]
                                 opdata = new byte[calldata[j].Length / 2];
-                                for (int index = 0; index < data.Length; index++)
+                                for (int index = 0; index < opdata.Length; index++)
                                 {
                                     string byteValue = calldata[j].Substring(index * 2, 2);
-                                    data[index] = byte.Parse(byteValue, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+                                    opdata[index] = byte.Parse(byteValue, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
                                 }
                             }
                         }

@@ -901,13 +901,26 @@ namespace Neo.Compiler.MSIL
                     }
                     else
                     {
-                        if(!isHex[j])
+                        byte[] opdata = null;
+                        if(calldata[j].Length > 0)
                         {
-                            throw new Exception("neomachine general OpCodeAttribute field OpData currently supports only hex!");
+                            if(!isHex[j])
+                            {
+                                // convert string to byte[]
+                                opdata = System.Text.Encoding.UTF8.GetBytes(calldata[j]);
+                            }
+                            else
+                            {
+                                // convert hex string to byte[]
+                                opdata = new byte[calldata[j].Length / 2];
+                                for (int index = 0; index < data.Length; index++)
+                                {
+                                    string byteValue = calldata[j].Substring(index * 2, 2);
+                                    data[index] = byte.Parse(byteValue, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+                                }
+                            }
                         }
-
-                        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(calldata[j]);
-                        _Convert1by1(callcodes[j], src, to, bytes);
+                        _Convert1by1(callcodes[j], src, to, opdata);
                     }
                 }
                 return 0;

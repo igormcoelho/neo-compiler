@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -870,7 +870,7 @@ namespace Neo.Compiler.MSIL
             ILType type;
             if (inModule.mapType.TryGetValue(typename, out type) == false)
             {
-                type = new ILType(null, method.DeclaringType);
+                type = new ILType(null, method.DeclaringType, logger);
                 inModule.mapType[typename] = type;
             }
 
@@ -1181,7 +1181,9 @@ namespace Neo.Compiler.MSIL
                             {
                                 var value = (byte)values[j].Value;
                                 VM.OpCode v = (VM.OpCode)value;
-                                _Insert1(v, null, to);
+                                //_Insert1(v, src, to); this will miss the address for new xxx();
+                                _Convert1by1(v, src, to);
+
                             }
                             //var _type = attr.ConstructorArguments[0].Type;
 

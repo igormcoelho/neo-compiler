@@ -171,14 +171,12 @@ namespace Neo.Compiler.MSIL
                             nm.paramtypes.Add(new NeoParam(src.name, src.type));
                         }
 
-                        byte[] outcall; string name; VM.OpCode[] opcodes;
+                        byte[] outcall; string name; VM.OpCode[] opcodes; string[] opdata; bool[] isHex;
                         if (IsAppCall(m.Value.method, out outcall))
                             continue;
                         if (IsNonCall(m.Value.method))
                             continue;
-                        if (IsOpCall(m.Value.method, out opcodes))
-                            continue;
-                        if (IsSysCall(m.Value.method, out name))
+                        if (IsMixAttribute(m.Value.method, out opcodes, out opdata, out isHex))
                             continue;
 
                         this.ConvertMethod(m.Value, nm);

@@ -185,6 +185,8 @@ namespace Neo.Compiler.MSIL
 
             _Convert1by1(VM.OpCode.SETITEM, null, to);
         }
+
+/*
         public bool IsSysCall(Mono.Cecil.MethodDefinition defs, out string name)
         {
             if (defs == null)
@@ -210,9 +212,9 @@ namespace Neo.Compiler.MSIL
             }
             name = "";
             return false;
-
-
         }
+*/
+
         public bool IsAppCall(Mono.Cecil.MethodDefinition defs, out byte[] hash)
         {
             if (defs == null)
@@ -297,6 +299,89 @@ namespace Neo.Compiler.MSIL
             }
             return false;
         }
+
+        public bool IsMixAttribute(Mono.Cecil.MethodDefinition defs, out VM.OpCode[] opcodes, out string[] opdata, out bool[] isHex)
+        {
+            // =========================================
+            // Integrates attributes: OpCode and Syscall
+            // =========================================
+
+            opcodes = null;
+            opdata = null;
+            isHex = null;
+
+            if (defs == null)
+            {
+                return false;
+            }
+
+            if(defs.CustomAttributes.Count == 0)
+            {
+                // no Attribute
+                return false;
+            }
+
+            opcodes = new VM.OpCode[defs.CustomAttributes.Count];
+            opdata  = new string[defs.CustomAttributes.Count];
+            isHex   = new bool[defs.CustomAttributes.Count];
+
+            int i = 0;
+
+            foreach (var attr in defs.CustomAttributes)
+            {
+                if (attr.AttributeType.Name == "OpCodeAttribute")
+                {
+                    opcodes[i] = (VM.OpCode)attr.ConstructorArguments[0].Value;
+                    opdata[i] = (string)attr.ConstructorArguments[1].Value;
+                    isHex[i] = (bool) attr.ConstructorArguments[2].Value;
+
+                    if((opdata[i] != "") && (opcodes[i] != VM.OpCode.SYSCALL))
+                    {
+                        throw new Exception("neomachine OpCodeAttribute field OpData currently supported only for SYSCALL opcode!");
+                        return false;
+                    }
+
+                    if((opcodes[i] == VM.OpCode.SYSCALL) && (isHex[i] || (opdata[i] == "")))
+                    {
+                        throw new Exception("neomachine OpCodeAttribute field OpData currently supports SYSCALL only with plain non-empty text (not hex)!");
+                        return false;
+                    }
+
+                    i++;
+                }
+                else if (attr.AttributeType.Name == "SyscallAttribute")
+                {
+                    //var type = attr.ConstructorArguments[0].Type;
+                    var val = (string)attr.ConstructorArguments[0].Value;
+
+                    opcodes[i] = VM.OpCode.SYSCALL;
+                    opdata[i] = val;
+                    isHex[i] = false; // not hex, just plain ascii text
+
+                    i++;
+                }
+            }
+
+            if(i == defs.CustomAttributes.Count)
+            {
+                // all attributes are OpCode or Syscall
+                return true;
+            }
+
+            opcodes = null;
+            opdata = null;
+            isHex = null;
+
+            if(i > 0)
+            {
+                // OpCodeAttribute/SyscallAttribute together with different attributes, cannot mix!
+                throw new Exception("neomachine Cannot mix OpCode/Syscall attributes with others!");
+            }
+
+            return false;
+        }
+
+/*
         public bool IsOpCall(Mono.Cecil.MethodDefinition defs, out VM.OpCode[] opcodes)
         {
             opcodes = null;
@@ -326,6 +411,7 @@ namespace Neo.Compiler.MSIL
             }
             return false;
         }
+*/
 
         public bool IsNotifyCall(Mono.Cecil.MethodDefinition defs, Mono.Cecil.MethodReference refs, NeoMethod to, out string name)
         {
@@ -380,6 +466,8 @@ namespace Neo.Compiler.MSIL
             byte[] callhash = null;
             VM.OpCode callcode = VM.OpCode.NOP;
             VM.OpCode[] callcodes = null;
+            string[] calldata = null;
+            bool[] isHex = null;
 
             Mono.Cecil.MethodDefinition defs = null;
             try
@@ -405,9 +493,9 @@ namespace Neo.Compiler.MSIL
                 calltype = 6;
                 to.lastparam = -1;
             }
-            else if (IsOpCall(defs, out callcodes))
-            {
-                calltype = 2;
+            //else if (IsOpCall(defs, out callcodes))
+            //{
+            //    calltype = 2;
 
                 //if (System.Enum.TryParse<VM.OpCode>(callname, out callcode))
                 //{
@@ -417,14 +505,18 @@ namespace Neo.Compiler.MSIL
                 //{
                 //    throw new Exception("Can not find OpCall:" + callname);
                 //}
-            }
+            //}
             //else if (IsOpCodesCall(defs, out callcodes))
             //{
             //    calltype = 7;
             //}
-            else if (IsSysCall(defs, out callname))
+            //else if (IsSysCall(defs, out callname))
+            //{
+            //    calltype = 3;
+            //}
+            else if (IsMixAttribute(defs, out callcodes, out calldata, out isHex))
             {
-                calltype = 3;
+                calltype = 7;
             }
             else if (IsAppCall(defs, out callhash))
             {
@@ -700,8 +792,10 @@ namespace Neo.Compiler.MSIL
             {//翻转参数顺序
 
                 //如果是syscall 并且有this的，翻转范围加一
-                if (calltype == 3 && havethis)
-                    pcount++;
+                if(havethis)
+                    if ((calltype == 3) || ((calltype == 7) && (callcodes[0] == VM.OpCode.SYSCALL)))
+                        pcount++;
+                // calltype == 3 does not exist anymore
 
                 _Convert1by1(VM.OpCode.NOP, src, to);
                 if (pcount <= 1)
@@ -759,12 +853,15 @@ namespace Neo.Compiler.MSIL
                 }
                 return 0;
             }
+/*
             else if (calltype == 2)
             {
                 //contains (0 opcode= nonemit, 1 opcode= old opcode  , >=2 opcodes = new multi opcode
                 for (var j = 0; j < callcodes.Length; j++)
                     _Convert1by1(callcodes[j], src, to);
             }
+*/
+/*
             else if (calltype == 3)
             {
                 byte[] bytes = null;
@@ -783,6 +880,38 @@ namespace Neo.Compiler.MSIL
                 Array.Copy(bytes, 0, outbytes, 1, bytes.Length);
                 //bytes.Prepend 函数在 dotnet framework 4.6 编译不过
                 _Convert1by1(VM.OpCode.SYSCALL, null, to, outbytes);
+                return 0;
+            }
+*/
+            else if (calltype == 7)
+            {
+                for (var j = 0; j < callcodes.Length; j++)
+                {
+                    if(callcodes[j] == VM.OpCode.SYSCALL)
+                    {
+                        byte[] bytes = null;
+                        if (this.outModule.option.useSysCallInteropHash)
+                        {
+                            //now neovm use ineropMethod hash for syscall.
+                            bytes = BitConverter.GetBytes(calldata[j].ToInteropMethodHash());
+                        }
+                        else
+                        {
+                            bytes = System.Text.Encoding.UTF8.GetBytes(calldata[j]);
+                            if (bytes.Length > 252) throw new Exception("string is to long");
+                        }
+                        byte[] outbytes = new byte[bytes.Length + 1];
+                        outbytes[0] = (byte)bytes.Length;
+                        Array.Copy(bytes, 0, outbytes, 1, bytes.Length);
+                        //bytes.Prepend 函数在 dotnet framework 4.6 编译不过
+                        _Convert1by1(VM.OpCode.SYSCALL, null, to, outbytes);
+                    }
+                    else
+                    {
+                        _Convert1by1(callcodes[j], src, to);
+                        // TODO: consider calldata[j] for other opcodes (PUSHDATA2, etc...) using isHex (example: "01ab" ...)
+                    }
+                }
                 return 0;
             }
             else if (calltype == 4)

@@ -259,7 +259,7 @@ namespace Neo.Compiler.MSIL
                         logger.Log(code.ToString());
                         if(code.Operand != null)
                             logger.Log(code.Operand.ToString());
-                        c.InitToken(code.Operand);
+                        c.InitToken(code.Operand, logger);
                         this.body_Codes.Add(c.addr, c);
                     }
                 }
@@ -562,9 +562,10 @@ namespace Neo.Compiler.MSIL
         public float tokenR32;
         public double tokenR64;
         public string tokenStr;
-        public void InitToken(object _p)
+        public void InitToken(object _p, ILogger logger = null)
         {
-            logger.Log($"INITTOKEN: {_p.ToString()}");
+            if(logger != null)
+                logger.Log($"INITTOKEN: {_p.ToString()}");
             this.tokenUnknown = _p;
             switch (code)
             {

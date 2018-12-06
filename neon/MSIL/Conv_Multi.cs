@@ -332,6 +332,7 @@ namespace Neo.Compiler.MSIL
 
             foreach (var attr in defs.CustomAttributes)
             {
+                logger.Log($"yyy attribute {attr.AttributeType.Name}");
                 if (attr.AttributeType.Name == "OpCodeAttribute")
                 {
                     opcodes[i] = (VM.OpCode)attr.ConstructorArguments[0].Value;

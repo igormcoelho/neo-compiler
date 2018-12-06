@@ -316,18 +316,28 @@ namespace Neo.Compiler.MSIL
                 return false;
             }
 
-            if(defs.CustomAttributes.Count == 0)
+            int count_attrs = 0;
+
+            foreach (var attr in defs.CustomAttributes)
             {
-                // no Attribute
+                if ((attr.AttributeType.Name == "OpCodeAttribute") ||
+                    (attr.AttributeType.Name == "SyscallAttribute") ||
+                    (attr.AttributeType.Name == "ScriptAttribute"))
+                    count_attrs++;
+            }
+
+            if(count_attrs == 0)
+            {
+                // no OpCode/Syscall/Script Attribute
                 return false;
             }
 
-            opcodes = new VM.OpCode[defs.CustomAttributes.Count];
-            opdata  = new string[defs.CustomAttributes.Count];
-            isHex   = new bool[defs.CustomAttributes.Count];
+            opcodes = new VM.OpCode[count_attrs];
+            opdata  = new string[count_attrs];
+            isHex   = new bool[count_attrs];
 
-            int i = 0;
-            int ext = 0; // extension attribute (automatically included if using 'this' on parameter)
+            int i = 0; // index each attribute
+            int ext = 0; // extension attributes (automatically included if using 'this' on parameter)
 
             foreach (var attr in defs.CustomAttributes)
             {
@@ -366,23 +376,21 @@ namespace Neo.Compiler.MSIL
                     ext++;
             }
 
-            if((i > 0) && ((i + ext) == defs.CustomAttributes.Count))
+            if((count_attrs + ext) == defs.CustomAttributes.Count))
             {
                 // all attributes are OpCode or Syscall or Script (plus ExtensionAttribute which is automatic)
                 return true;
             }
-
-            opcodes = null;
-            opdata = null;
-            isHex = null;
-
-            if(i > 0)
+            else
             {
+                opcodes = null;
+                opdata = null;
+                isHex = null;
+
                 // OpCodeAttribute/SyscallAttribute together with different attributes, cannot mix!
                 throw new Exception("neomachine Cannot mix OpCode/Syscall/Script attributes with others!");
+                return false;
             }
-
-            return false;
         }
 
 /*

@@ -303,9 +303,9 @@ namespace Neo.Compiler.MSIL
 
         public bool IsMixAttribute(Mono.Cecil.MethodDefinition defs, out VM.OpCode[] opcodes, out string[] opdata, out bool[] isHex)
         {
-            // =========================================
-            // Integrates attributes: OpCode and Syscall
-            // =========================================
+            // ============================================
+            // Integrates attributes: OpCode/Syscall/Script
+            // ============================================
 
             opcodes = null;
             opdata = null;
@@ -349,11 +349,22 @@ namespace Neo.Compiler.MSIL
 
                     i++;
                 }
+                else if (attr.AttributeType.Name == "ScriptAttribute")
+                {
+                    //var type = attr.ConstructorArguments[0].Type;
+                    var val = (string)attr.ConstructorArguments[0].Value;
+
+                    opcodes[i] = VM.OpCode.NOP;
+                    opdata[i] = val;
+                    isHex[i] = true;
+
+                    i++;
+                }
             }
 
             if(i == defs.CustomAttributes.Count)
             {
-                // all attributes are OpCode or Syscall
+                // all attributes are OpCode or Syscall or Script
                 return true;
             }
 
@@ -364,7 +375,7 @@ namespace Neo.Compiler.MSIL
             if(i > 0)
             {
                 // OpCodeAttribute/SyscallAttribute together with different attributes, cannot mix!
-                throw new Exception("neomachine Cannot mix OpCode/Syscall attributes with others!");
+                throw new Exception("neomachine Cannot mix OpCode/Syscall/Script attributes with others!");
             }
 
             return false;

@@ -322,6 +322,8 @@ namespace Neo.Compiler.MSIL
                 return false;
             }
 
+            logger.Log($"XXXX attributes {defs.CustomAttributes.Count}");
+
             opcodes = new VM.OpCode[defs.CustomAttributes.Count];
             opdata  = new string[defs.CustomAttributes.Count];
             isHex   = new bool[defs.CustomAttributes.Count];

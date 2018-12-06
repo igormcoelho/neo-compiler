@@ -327,6 +327,7 @@ namespace Neo.Compiler.MSIL
             isHex   = new bool[defs.CustomAttributes.Count];
 
             int i = 0;
+            int ext = 0; // extension attribute (automatically included if using 'this' on parameter)
 
             foreach (var attr in defs.CustomAttributes)
             {
@@ -360,11 +361,14 @@ namespace Neo.Compiler.MSIL
 
                     i++;
                 }
+
+                if (attr.AttributeType.Name == "ExtensionAttribute")
+                    ext++;
             }
 
-            if(i == defs.CustomAttributes.Count)
+            if((i > 0) && ((i + ext) == defs.CustomAttributes.Count))
             {
-                // all attributes are OpCode or Syscall or Script
+                // all attributes are OpCode or Syscall or Script (plus ExtensionAttribute which is automatic)
                 return true;
             }
 

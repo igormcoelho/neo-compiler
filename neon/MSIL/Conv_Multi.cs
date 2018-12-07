@@ -376,7 +376,7 @@ namespace Neo.Compiler.MSIL
                     ext++;
             }
 
-            if((count_attrs + ext) == defs.CustomAttributes.Count))
+            if((count_attrs + ext) == defs.CustomAttributes.Count)
             {
                 // all attributes are OpCode or Syscall or Script (plus ExtensionAttribute which is automatic)
                 return true;

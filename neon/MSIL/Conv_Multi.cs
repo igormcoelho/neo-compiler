@@ -301,7 +301,7 @@ namespace Neo.Compiler.MSIL
             return false;
         }
 
-        public bool IsMixAttribute(Mono.Cecil.MethodDefinition defs, out VM.OpCode[] opcodes, out string[] opdata, out bool[] isHex)
+        public bool IsMixAttribute(Mono.Cecil.MethodDefinition defs, out VM.OpCode[] opcodes, out string[] opdata)
         {
             // ============================================
             // Integrates attributes: OpCode/Syscall/Script
@@ -309,7 +309,6 @@ namespace Neo.Compiler.MSIL
 
             opcodes = null;
             opdata = null;
-            isHex = null;
 
             if (defs == null)
             {
@@ -334,7 +333,6 @@ namespace Neo.Compiler.MSIL
 
             opcodes = new VM.OpCode[count_attrs];
             opdata  = new string[count_attrs];
-            isHex   = new bool[count_attrs];
 
             int i = 0; // index each attribute
             int ext = 0; // extension attributes (automatically included if using 'this' on parameter)
@@ -345,7 +343,6 @@ namespace Neo.Compiler.MSIL
                 {
                     opcodes[i] = (VM.OpCode)attr.ConstructorArguments[0].Value;
                     opdata[i] = (string)attr.ConstructorArguments[1].Value;
-                    isHex[i] = (bool) attr.ConstructorArguments[2].Value;
 
                     i++;
                 }
@@ -356,7 +353,6 @@ namespace Neo.Compiler.MSIL
 
                     opcodes[i] = VM.OpCode.SYSCALL;
                     opdata[i] = val;
-                    isHex[i] = false; // not hex, just plain ascii text
 
                     i++;
                 }
@@ -367,7 +363,6 @@ namespace Neo.Compiler.MSIL
 
                     opcodes[i] = VM.OpCode.NOP;
                     opdata[i] = val;
-                    isHex[i] = true;
 
                     i++;
                 }
@@ -385,7 +380,6 @@ namespace Neo.Compiler.MSIL
             {
                 opcodes = null;
                 opdata = null;
-                isHex = null;
 
                 // OpCodeAttribute/SyscallAttribute together with different attributes, cannot mix!
                 throw new Exception("neomachine Cannot mix OpCode/Syscall/Script attributes with others!");
@@ -479,7 +473,6 @@ namespace Neo.Compiler.MSIL
             VM.OpCode callcode = VM.OpCode.NOP;
             VM.OpCode[] callcodes = null;
             string[] calldata = null;
-            bool[] isHex = null;
 
             Mono.Cecil.MethodDefinition defs = null;
             try
@@ -526,7 +519,7 @@ namespace Neo.Compiler.MSIL
             //{
             //    calltype = 3;
             //}
-            else if (IsMixAttribute(defs, out callcodes, out calldata, out isHex))
+            else if (IsMixAttribute(defs, out callcodes, out calldata))
             {
                 calltype = 7;
             }
@@ -899,9 +892,31 @@ namespace Neo.Compiler.MSIL
             {
                 for (var j = 0; j < callcodes.Length; j++)
                 {
+                    byte[] opdata = null;
+                    bool isHex = true;
+                    if(calldata[j].Length > 0)
+                    {
+                        opdata = new byte[calldata[j].Length / 2];
+                        try  // convert hex string to byte[]
+                        {
+                            for (int index = 0; index < opdata.Length; index++)
+                            {
+                                string byteValue = calldata[j].Substring(index * 2, 2);
+                                opdata[index] = byte.Parse(byteValue, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+                            }
+                        }
+                        catch(Exception e)
+                        {
+                            // convert string to byte[]
+                            opdata = System.Text.Encoding.ASCII.GetBytes(calldata[j]);
+                            isHex = false;
+                        }
+                     }
+
+
                     if(callcodes[j] == VM.OpCode.SYSCALL)
                     {
-                        if(isHex[j])
+                        if(isHex)
                         {
                             throw new Exception("neomachine OpCodeAttribute field OpData currently supports SYSCALL only with plain non-empty text (not hex)!");
                         }
@@ -925,25 +940,7 @@ namespace Neo.Compiler.MSIL
                     }
                     else
                     {
-                        byte[] opdata = null;
-                        if(calldata[j].Length > 0)
-                        {
-                            if(!isHex[j])
-                            {
-                                // convert string to byte[]
-                                opdata = System.Text.Encoding.UTF8.GetBytes(calldata[j]);
-                            }
-                            else
-                            {
-                                // convert hex string to byte[]
-                                opdata = new byte[calldata[j].Length / 2];
-                                for (int index = 0; index < opdata.Length; index++)
-                                {
-                                    string byteValue = calldata[j].Substring(index * 2, 2);
-                                    opdata[index] = byte.Parse(byteValue, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-                                }
-                            }
-                        }
+                        // OpCode/Script Attribute
                         _Convert1by1(callcodes[j], src, to, opdata);
                     }
                 }
